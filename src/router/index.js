@@ -7,9 +7,28 @@ const routes = [
     component: () => import("../views/Home.vue"),
   },
   {
-    path: "/login",
-    name: "login",
-    component: () => import("../views/Login.vue"),
+    path: "/auth",
+    name: "auth",
+    redirect: { name: "login" },
+    component: () => import("../views/Auth.vue"),
+    children: [
+      {
+        path: "login",
+        name: "login",
+        component: () => import("../views/Login.vue"),
+      },
+      {
+        path: "signup",
+        name: "signup",
+        component: () => import("../views/Signup.vue"),
+      },
+          // TODO Bonus
+    // {
+    //   path: "forgot",
+    //   name: "forgot",
+    //   component: () => import("../views/Forgot.vue"),
+    // },
+    ],
   },
 ];
 

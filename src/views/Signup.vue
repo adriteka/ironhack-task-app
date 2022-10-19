@@ -1,24 +1,27 @@
 <template>
-  <h3>Log In</h3>
+  <h3>Sign Up</h3>
   <form @submit.prevent="onSubmit()">
     <label for="email">E-mail</label>
     <input v-model="form.email.value" type="email" id="email" />
     <label for="password">Password</label>
     <input v-model="form.password.value" type="password" id="password" />
-    <button type="submit">Log in!</button>
+    <label for="password-repeat">Repeat password</label>
+    <input
+      v-model="form.passwordRepeat.value"
+      type="password"
+      id="password-repeat"
+    />
+    <button type="submit">Sign up!</button>
   </form>
   <p>
-    Not registered yet?
-    <router-link :to="{ name: 'signup' }"
-      >Sign up!</router-link
-    >
+    Already have an account?
+    <router-link :to="{ name: 'login' }">Log in!</router-link>
   </p>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { useAuthStore } from "../stores";
-const authStore = useAuthStore();
+import { signUp } from "../api/supabase.js";
 const form = ref({
   email: {
     value: "",
@@ -28,16 +31,14 @@ const form = ref({
     value: "",
     error: false,
   },
+  passwordRepeat: {
+    value: "",
+    error: false,
+  },
 });
+
 const onSubmit = async () => {
-  try {
-    await authStore.logIn(
-      form.value.email.value,
-      form.value.password.value
-    );
-  } catch (e) {
-    console.log("on submit login:", e);
-  }
+  await signUp(form.value.email.value, form.value.password.value);
 };
 </script>
 
