@@ -13,7 +13,7 @@ export const useAuthStore = defineStore("auth", {
     // priorityStyle: "1mtd"
   }),
   actions: {
-    signup() {
+    async signup() {
       const userId = await signUp(email, password);
       this.userId = userId;
       this.email = email;
