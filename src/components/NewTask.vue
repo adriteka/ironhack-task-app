@@ -3,6 +3,7 @@
     <table>
       <thead>
         <tr>
+          <th><label for="is-completed">Completed</label></th>
           <th><label for="title">New Task</label></th>
           <th><label for="priority">Urgency</label></th>
           <th><label for="start-date">Start Date</label></th>
@@ -12,6 +13,13 @@
       </thead>
       <tbody>
         <tr>
+          <td>
+            <input
+              v-model="form.isCompleted.value"
+              type="checkbox"
+              id="is-completed"
+            />
+          </td>
           <td><input v-model="form.title.value" type="text" id="title" /></td>
           <td>
             <select v-model="form.priority.value" id="priority">
@@ -41,6 +49,10 @@ const authStore = useAuthStore();
 const taskStore = useTaskStore();
 
 const form = ref({
+  isCompleted: {
+    value: false,
+    error: false,
+  },
   title: {
     value: "",
     error: false,
@@ -58,13 +70,10 @@ const form = ref({
     value: 2,
     error: false,
   },
-  isComplete: {
-    value: false,
-    error: false,
-  },
 });
 
 const onSubmit = () => {
+  console.log("onSubmit", form.value);
   const newTask = {
     id: undefined,
     userId: authStore.userId,
@@ -72,16 +81,29 @@ const onSubmit = () => {
     priority: form.value.priority.value,
     startDate: form.value.startDate.value,
     dueDate: form.value.dueDate.value ? form.value.dueDate.value : null,
-    completionDate: null,
-    isComplete: false,
+    completedAt: null,
+    refreshedAt: new Date(),
+    isCompleted: form.value.isCompleted.value,
     isArchived: false,
   };
 
   try {
     taskStore.createTask(newTask);
+    resetForm();
   } catch (e) {
     console.log("newTask error", e);
   }
+};
+
+const resetForm = () => {
+  form.value.title.value = "";
+  form.value.title.error = false;
+  form.value.startDate.value = new Date().toISOString().split("T")[0];
+  form.value.startDate.error = false;
+  form.value.dueDate.value = null;
+  form.value.dueDate.error = false;
+  form.value.priority.value = "2";
+  form.value.priority.error = false;
 };
 </script>
 

@@ -8,65 +8,79 @@
     <div>Due Date</div>
     <div>Actions</div>
   </header>
-  <section v-if="taskStore.tasks">
-    <!-- @dblclick="toggleFieldSet(task.id)" -->
-    <div v-for="task in taskStore.tasks" :key="task.id">
-      <form @submit.prevent="onSubmit(task.id)">
-        <div>{{ task.id }}</div>
+  <section v-if="tasks">
+    <!-- @dblclick="toggleFieldSet(t.id)" -->
+    <div v-for="t in tasks" :key="t.id">
+      <form @submit.prevent="onSubmit(t)">
+        <div>{{ t.id }}</div>
         <input
-          v-model="task.isComplete"
-          @click="onCompleteClick(task)"
+          v-model="t.isCompleted"
+          @change="onCompletedClick(t)"
           type="checkbox"
           id=""
         />
-        <fieldset disabled :id="'fieldset-' + task.id">
-          <input v-model="task.title" type="text" id="" />
-          <select v-model="task.priority" id="">
+        <fieldset disabled :id="'fieldset-' + t.id">
+          <input v-model="t.title" type="text" id="" />
+          <select v-model="t.priority" id="">
             <option value="3">Critical</option>
             <option value="2">Opportunity</option>
             <option value="1">Horizon</option>
           </select>
-          <input v-model="task.startDate" type="date" id="" />
-          <input v-model="task.dueDate" type="date" id="" />
+          <input v-model="t.startDate" type="date" id="" />
+          <input v-model="t.dueDate" type="date" id="" />
         </fieldset>
-        <div>
-          <button @click="onEditClick(task.id)">Edit</button>
-          <button @click="onDeleteClick(task.id)">Delete</button>
-          <button @click="onDeferClick(task.id)">Defer</button>
-        </div>
       </form>
+      <div>
+        <button @click="onEditClick(t.id)">Edit</button>
+        <button @click="onDeleteClick(t)">Delete</button>
+        <button @click="onDeferClick(t.id)">Defer</button>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import { useTaskStore } from "../stores";
+import { computed, onMounted } from "vue";
+import { useTaskStore, taskPriorities } from "../stores";
 const taskStore = useTaskStore();
+const tasks = computed(() => {
+  const arr = taskStore.tasks.filter(
+    (t) => t.priority === taskPriorities.critical
+  );
+  console.log("computed critical", arr);
+  return arr;
+  // TODO sort
+});
 
-const onSubmit = (taskId) => {
+const onSubmit = (t) => {
   // document.getElementById("fieldset-" + taskId).disabled = true;
-  const task = taskStore.getTask(taskId);
-  if (!task.dueDate) task.dueDate = null;
+  console.log("onSubmit", t);
+  if (!t.dueDate) t.dueDate = null;
   try {
-    taskStore.modifyTask(task);
+    taskStore.modifyTask(t);
+    toggleFieldSet(t.id);
   } catch (e) {
     console.log(e);
   }
 };
 
-const onCompleteClick = (task) => {
+const onCompletedClick = (t) => {
   // const task = taskStore.getTask(taskId);
-  // if (task.isComplete) {
-  //   task.completionDate = new Date();
-  //   console.log("isComplete TRUE", task.completionDate);
+  console.log(
+    `onCompletedClick: ${t.id} ${t.isCompleted} ${typeof t.isCompleted}`
+  );
+  console.log(t);
+  t.title = "Pues lo cambio";
+  // if (t.isCompleted) {
+  //   t.completetedAt = new Date();
+  //   console.log("isCompleted TRUE", t.completedAt);
   // } else {
-  //   task.completionDate = null;
-  //   console.log("isComplete FALSE", task.completionDate);
+  //   t.completedAt = null;
+  //   console.log("isCompleted FALSE", t.completedAt);
   // }
-  // console.log("onCompleteClick", task);
+  // console.log("onCompletedClick", task);
   // try {
-    taskStore.modifyTask(task);
+  // taskStore.modifyTask(t);
   // } catch (e) {
   //   console.log(e);
   // }
@@ -74,14 +88,14 @@ const onCompleteClick = (task) => {
 
 const onEditClick = (taskId) => {
   toggleFieldSet(taskId);
-  // TODO guardar copia de tarea antes de ser modificada
+  // TODO guardar copia de tarea antes de ser modificada en caso de undo
 };
 
-const onDeleteClick = (taskId) => {
+const onDeleteClick = (task) => {
   const accept = confirm("Delete for sure?");
   if (accept) {
     try {
-      taskStore.removeTask(taskId);
+      taskStore.removeTask(task);
     } catch (e) {
       console.log(e);
     }
@@ -89,9 +103,8 @@ const onDeleteClick = (taskId) => {
 };
 
 onMounted(async () => {
-  // (if !taskStore.tasks)
-  await taskStore.getTasks();
-
+  // if (!taskStore.tasks)
+  await taskStore.getAllTasks();
 });
 
 const toggleFieldSet = (taskId) => {
@@ -105,6 +118,18 @@ header,
 form {
   display: flex;
   gap: 1rem;
+}
+
+section > div {
+  display: flex;
+  gap: 1rem;
+}
+
+section > div > :last-child {
+  background-color: lightgoldenrodyellow;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 form {

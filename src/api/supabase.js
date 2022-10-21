@@ -12,21 +12,21 @@ const snakeToCamelStr = (str) => {
   else return str.replace(/_./g, (x) => x[1].toUpperCase());
 };
 
-const camelToSnakeObj = (obj) => {
+const camelToSnake = (obj) => {
   const newObj = {};
   for (let key in obj) {
     newObj[camelToSnakeStr(key)] = obj[key];
-    console.log(
-      `camelToSnake | ${key}: ${obj[key]} | ${camelToSnakeStr(key)}: ${
-        newObj[camelToSnakeStr(key)]
-      }`
-    );
+    // console.log(
+    //   `camelToSnake | ${key}: ${obj[key]} | ${camelToSnakeStr(key)}: ${
+    //     newObj[camelToSnakeStr(key)]
+    //   }`
+    // );
   }
-  console.log("camelToSnake isComplete", obj.isComplete);
+  // console.log("camelToSnake- obj.isCompleted:", obj.isCompleted);
   return newObj;
 };
 
-const snakeToCamelObj = (obj) => {
+const snakeToCamel = (obj) => {
   const newObj = {};
   for (let key in obj) {
     newObj[snakeToCamelStr(key)] = obj[key];
@@ -70,8 +70,23 @@ export const logOut = async () => {
 
 // Tasks
 
+export const selectAllTasks = async () => {
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .order("priority", { ascending: false })
+    // .order("is_archived")
+    .order("start_date", { ascending: false })
+    .order("refreshed_at", { ascending: false });
+
+  // TODO remove throw ¿?
+  if (error) throw error.message;
+  console.log("API selectAllTasks");
+  return data.map((elem) => snakeToCamel(elem));
+};
+
 export const insertTask = async (task) => {
-  const snakeTask = camelToSnakeObj(task);
+  const snakeTask = camelToSnake(task);
   const { data, error } = await supabase
     .from("tasks")
     .insert(snakeTask)
@@ -93,25 +108,20 @@ export const insertTask = async (task) => {
 //   return data.id;
 // };
 
-export const selectTasks = async () => {
-  const { data, error } = await supabase
+export const updateTask2 = async (fieldChanges, id) => {
+  const { error } = await supabase
     .from("tasks")
-    .select("*")
-    .order("priority", { ascending: false })
-    .order("is_complete")
-    .order("start_date", { ascending: false });
-  if (error) throw error.message;
-
-  const camelData = data.map((elem) => {
-    return snakeToCamelObj(elem);
-  });
-  return camelData;
+    .update(camelToSnake(fieldChanges))
+    .eq("id", id);
+  console.log("updateTask2", error);
 };
 
 export const updateTask = async (task) => {
-  console.log("updateTask", task, task.isComplete, typeof task.isComplete);
-  // console.log("updateTask.isComplete", task.isComplete, task.id);
-  // const snakeTask = camelToSnakeObj(task);
+  console.log(
+    `updateTask: ${task.id} ${task.isCompleted} ${typeof task.isCompleted}`
+  );
+  console.log(task);
+  const snakeTask = camelToSnake(task);
   const { error } = await supabase
     .from("tasks")
     .update(snakeTask)
@@ -121,7 +131,7 @@ export const updateTask = async (task) => {
 
 export const deleteTask = async (id) => {
   const { error } = await supabase.from("tasks").delete().eq("id", id);
-  if (error) throw error.message;
+  if (error) console.log("deleteTask", error.message);
 };
 
 // TODO
