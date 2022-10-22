@@ -22,7 +22,6 @@ const camelToSnake = (obj) => {
     //   }`
     // );
   }
-  // console.log("camelToSnake- obj.isCompleted:", obj.isCompleted);
   return newObj;
 };
 
@@ -75,7 +74,7 @@ export const selectAllTasks = async () => {
     .from("tasks")
     .select("*")
     .order("priority", { ascending: false })
-    // .order("is_archived")
+    // TODO .order("is_archived")
     .order("start_date", { ascending: false })
     .order("refreshed_at", { ascending: false });
 
@@ -85,48 +84,26 @@ export const selectAllTasks = async () => {
   return data.map((elem) => snakeToCamel(elem));
 };
 
-export const insertTask = async (task) => {
-  const snakeTask = camelToSnake(task);
+export const insertTask = async (fieldValues) => {
+  fieldValues.refreshedAt = Date.now();
+  console.log("insertTask camelToSnake", camelToSnake(fieldValues));
   const { data, error } = await supabase
     .from("tasks")
-    .insert(snakeTask)
+    .insert(camelToSnake(fieldValues))
     .select()
     .single();
-  if (error) throw error.message;
-  return data.id;
+  if (error) console.log("Insert error", error.message);
+  else console.log("Insert data", data);
+  return snakeToCamel(data);
 };
 
-// export const selectLastTaskId = async () => {
-//   const { data, error } = await supabase
-//     .from("tasks")
-//     .select("id")
-//     .order("id", { ascending: false })
-//     .limit(1)
-//     .single();
-//   if (error) throw error.message;
-//   console.log("selectLastId", data);
-//   return data.id;
-// };
-
-export const updateTask2 = async (fieldChanges, id) => {
+export const updateTask = async (id, fieldValues) => {
+  console.log("updateTask fieldValues", camelToSnake(fieldValues));
   const { error } = await supabase
     .from("tasks")
-    .update(camelToSnake(fieldChanges))
+    .update(camelToSnake(fieldValues))
     .eq("id", id);
-  console.log("updateTask2", error);
-};
-
-export const updateTask = async (task) => {
-  console.log(
-    `updateTask: ${task.id} ${task.isCompleted} ${typeof task.isCompleted}`
-  );
-  console.log(task);
-  const snakeTask = camelToSnake(task);
-  const { error } = await supabase
-    .from("tasks")
-    .update(snakeTask)
-    .eq("id", task.id);
-  // if (error) throw error.message;
+  console.log("updateTask", error);
 };
 
 export const deleteTask = async (id) => {

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { selectAllTasks, insertTask, updateTask2, deleteTask } from "../api";
+import { selectAllTasks, insertTask, updateTask, deleteTask } from "../api";
 
 export const taskPriorities = {
   critical: 3,
@@ -10,9 +10,9 @@ export const taskPriorities = {
 export const useTaskStore = defineStore("tasks", {
   state: () => ({
     tasks: [],
-    tasksCritical: [],
-    tasksOpportunity: [],
-    tasksHorizon: [],
+    // tasksCritical: [],
+    // tasksOpportunity: [],
+    // tasksHorizon: [],
     // TODO tasksArchived: [],
     // TODO tasksTrashed: [] isTrashed
   }),
@@ -21,24 +21,24 @@ export const useTaskStore = defineStore("tasks", {
       return this.tasks.find((t) => t.id === id);
     },
 
-    removeTaskFromList(id, priority) {
-      let arr = [];
-      switch (priority) {
-        case taskPriorities.critical:
-          arr = this.tasksCritical;
-          break;
-        case taskPriorities.opportunity:
-          arr = this.tasksOpportunity;
-          break;
-        case taskPriorities.horizon:
-          arr = this.tasksHorizon;
-          break;
-      }
-      const index = arr.findIndex((t) => {
-        t.id === id;
-      });
-      arr.splice(index, 1);
-    },
+    // removeTaskFromList(id, priority) {
+    //   let arr = [];
+    //   switch (priority) {
+    //     case taskPriorities.critical:
+    //       arr = this.tasksCritical;
+    //       break;
+    //     case taskPriorities.opportunity:
+    //       arr = this.tasksOpportunity;
+    //       break;
+    //     case taskPriorities.horizon:
+    //       arr = this.tasksHorizon;
+    //       break;
+    //   }
+    //   const index = arr.findIndex((t) => {
+    //     t.id === id;
+    //   });
+    //   arr.splice(index, 1);
+    // },
 
     async getAllTasks() {
       this.tasks = await selectAllTasks();
@@ -53,47 +53,53 @@ export const useTaskStore = defineStore("tasks", {
       // );
     },
 
-    async createTask(t) {
-      t.id = await insertTask(t);
+    async createTask(fieldValues) {
+      const t = await insertTask(fieldValues);
       this.tasks.push(t);
-      return t.id;
+      return t;
     },
 
-    async modifyTask(t) {
-      console.log("modifyTask", t);
+    async modifyTask(t, fieldValues) {
       // TODO - check dates are not empty
-      // TODO - upgrade from updateTask2 to updateTask
-      const fieldChanges = {
-        title: t.title,
-        priority: t.priority,
-        startDate: t.startDate,
-        dueDate: t.dueDate,
-      };
-      await updateTask2(fieldChanges, t.id);
+      await updateTask(t.id, fieldValues);
+      for (let key in fieldValues) {
+        t[key] = fieldValues[key];
+        console.log(`modifyTask ${key} ${t[key]}`);
+      }
     },
 
     async removeTask(t) {
       await deleteTask(t.id);
       const index = this.tasks.findIndex((elem) => elem.id === t.id);
       this.tasks.splice(index, 1);
+      // 3-ARRAY
+      // removeTaskFromList(t.id, t.priority)
     },
 
-    async archiveTask(t, id) {
-      const fieldChanges = {
+    async archiveTask(t) {
+      const fieldValues = {
         isArchived: true,
         // TODO isCompleted: true,
       };
-      t.isArchived = true;
       // TODO task.isCompleted = true;
-      await updateTask2(fieldChanges, id);
+      await updateTask(t.id, fieldValues);
+      t.isArchived = true;
     },
 
-    async completeTask(t, id) {
-      const fieldChanges = {
+    async deferTask(t, newDate) {
+      const fieldValues = {
+        startDate: newDate,
+        refreshedAt: new Date(),
+      };
+      await updateTask(t.id, fieldValues);
+    },
+
+    async completeTask(t) {
+      const fieldValues = {
         isCompleted: true,
         completedAt: new Date(),
       };
-      await updateTask2(fieldChanges, id);
+      await updateTask(t.id, fieldValues);
     },
   }, // end of actions
 });

@@ -1,9 +1,8 @@
 <template>
-  <form @submit.prevent="onSubmit()">
+  <form @submit.prevent="handleSubmit()">
     <table>
       <thead>
         <tr>
-          <th><label for="is-completed">Completed</label></th>
           <th><label for="title">New Task</label></th>
           <th><label for="priority">Urgency</label></th>
           <th><label for="start-date">Start Date</label></th>
@@ -13,26 +12,21 @@
       </thead>
       <tbody>
         <tr>
+          <td><input v-model="formValues.title" type="text" id="title" /></td>
           <td>
-            <input
-              v-model="form.isCompleted.value"
-              type="checkbox"
-              id="is-completed"
-            />
-          </td>
-          <td><input v-model="form.title.value" type="text" id="title" /></td>
-          <td>
-            <select v-model="form.priority.value" id="priority">
-              <option value="3">Critical</option>
-              <option value="2" default>Opportunity</option>
-              <option value="1">Horizon</option>
+            <select v-model="formValues.priority" id="priority">
+              <option :value="taskPriorities.critical">Critical</option>
+              <option :value="taskPriorities.opportunity" default>
+                Opportunity
+              </option>
+              <option :value="taskPriorities.horizon">Horizon</option>
             </select>
           </td>
           <td>
-            <input v-model="form.startDate.value" type="date" id="start-date" />
+            <input v-model="formValues.startDate" type="date" id="start-date" />
           </td>
           <td>
-            <input v-model="form.dueDate.value" type="date" id="due-date" />
+            <input v-model="formValues.dueDate" type="date" id="due-date" />
           </td>
           <td><button type="submit">Create</button></td>
         </tr>
@@ -43,67 +37,40 @@
 
 <script setup>
 import { ref } from "vue";
-import { useAuthStore, useTaskStore } from "../stores";
+import { useAuthStore, useTaskStore, taskPriorities } from "../stores";
 
 const authStore = useAuthStore();
 const taskStore = useTaskStore();
 
-const form = ref({
-  isCompleted: {
-    value: false,
-    error: false,
-  },
-  title: {
-    value: "",
-    error: false,
-  },
-  startDate: {
-    // default value provided in YYYY-MM-DD format
-    value: new Date().toISOString().split("T")[0],
-    error: false,
-  },
-  dueDate: {
-    value: null,
-    error: false,
-  },
-  priority: {
-    value: 2,
-    error: false,
-  },
+const formValues = ref({
+  userId: authStore.userId,
+  title: "",
+  priority: taskPriorities.opportunity,
+  // default value provided in YYYY-MM-DD format
+  startDate: new Date().toISOString().split("T")[0],
+  dueDate: null,
 });
 
-const onSubmit = () => {
-  console.log("onSubmit", form.value);
-  const newTask = {
-    id: undefined,
-    userId: authStore.userId,
-    title: form.value.title.value,
-    priority: form.value.priority.value,
-    startDate: form.value.startDate.value,
-    dueDate: form.value.dueDate.value ? form.value.dueDate.value : null,
-    completedAt: null,
-    refreshedAt: new Date(),
-    isCompleted: form.value.isCompleted.value,
-    isArchived: false,
-  };
+const handleSubmit = () => {
+  // TODO - validate form
+  console.log("handleSubmit formValues.value", formValues.value);
+  taskStore.createTask(formValues.value);
 
-  try {
-    taskStore.createTask(newTask);
-    resetForm();
-  } catch (e) {
-    console.log("newTask error", e);
-  }
+  resetForm();
 };
 
 const resetForm = () => {
-  form.value.title.value = "";
-  form.value.title.error = false;
-  form.value.startDate.value = new Date().toISOString().split("T")[0];
-  form.value.startDate.error = false;
-  form.value.dueDate.value = null;
-  form.value.dueDate.error = false;
-  form.value.priority.value = "2";
-  form.value.priority.error = false;
+  formValues.value.title = "";
+  formValues.value.priority = taskPriorities.opportunity;
+  formValues.value.startDate = new Date().toISOString().split("T")[0];
+  formValues.value.dueDate = null;
+
+  // TODO - error reset
+
+  // form.value.title.error = false;
+  // form.value.priority.error = false;
+  // form.value.startDate.error = false;
+  // form.value.dueDate.error = false;
 };
 </script>
 
