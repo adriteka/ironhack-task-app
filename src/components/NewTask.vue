@@ -1,7 +1,7 @@
 <template>
   <section class="box">
     <h3 class="title is-5">New task</h3>
-    <form @submit.prevent="handleSubmit()" class="columns is-variable is-2">
+    <form @submit.prevent="handleSubmit()" class="columns is-variable is-1">
       <div class="field column is-3">
         <label class="label is-size-6-5" for="title">Task</label>
         <input

@@ -4,31 +4,94 @@
     <!-- @dblclick="toggleEdit()" -->
     <!-- <div v-if="!isEdit" class="task-info" @dblclick="toggleEdit()"> -->
 
-    <div v-if="!isEdit" class="columns is-variable is-2 mb-4 task">
-      <p class="column is-5 pl-5">
-        {{ task.title }}
+    <!-- <div v-if="!isEdit" class="row-adjust"> -->
+    <!-- <div  v-if="!isEdit" class="columns"> -->
+    <div
+      v-if="!isEdit"
+      class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
+      :class="classesTaskCompleted"
+    >
+      <p class="column is-5 pt-4 pb-4">
+        <span
+          @dblclick="toggleEdit('inputTitle')"
+          :class="{ pointer: !task.isCompleted }"
+          :title="task.isCompleted ? '' : 'Double-click to edit'"
+          >{{ task.title }}</span
+        >
       </p>
 
-      <p class="column is-2">
-        {{ taskStore.getFormattedDate(task.startDate) }}
+      <p class="column is-2 pt-4 pb-4">
+        <span
+          @dblclick="toggleEdit('inputStartDate')"
+          :class="{ pointer: !task.isCompleted }"
+          :title="task.isCompleted ? '' : 'Double-click to edit'"
+          >{{ taskStore.getFormattedDate(task.startDate) }}</span
+        >
       </p>
-      <p class="column is-2">{{ taskStore.getFormattedDate(task.dueDate) }}</p>
-      <div class="actions column">
-        <input
-          v-model="formValues.isCompleted"
-          @change="handleCompleted()"
-          type="checkbox"
-          id="checkbox-done"
+      <p class="column is-2 pt-4 pb-4">
+        <span
+          @dblclick="toggleEdit('inputDueDate')"
+          :class="{ pointer: !task.isCompleted }"
+          :title="task.isCompleted ? '' : 'Double-click to edit'"
+          >{{ taskStore.getFormattedDate(task.dueDate) }}</span
+        >
+      </p>
+      <div class="actions column pt-4 pb-4 has-background-white-bis">
+        <font-awesome-icon
+          v-if="task.isCompleted"
+          @click="handleCompleted(false)"
+          icon="fa-regular fa-square-check"
+          title="Mark as pending"
+          class="pointer has-text-primary"
         />
-        <!-- <button @click="handleEdit()" class="button"> -->
-        <span class="icon is-normal" title="Edit the task">
-          <i class="fa-regular fa-pen-to-square"></i>
-        </span>
-        <!-- </button> -->
-        <button @click="handleDelete()">D</button>
-        <button @click="handleRefresh()">Rf</button>
-        <button @click="handlePostpone()">Df</button>
-        <button
+        <font-awesome-icon
+          v-else
+          @click="handleCompleted(true)"
+          icon="fa-regular fa-square"
+          title="Mark as completed"
+          class="pointer has-text-primary"
+        />
+        <font-awesome-icon
+          @click="toggleEdit()"
+          icon="fa-solid fa-pen-to-square"
+          title="Edit"
+          class="pointer has-text-info"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+        <font-awesome-icon
+          @click="handleDelete()"
+          icon="fa-solid fa-trash-can"
+          title="Trash"
+          class="pointer has-text-danger"
+        />
+
+        <span
+          class="is-size-7-5 has-text-grey-lighter"
+          :class="{ 'is-hidden': task.isCompleted }"
+          >●</span
+        >
+        <font-awesome-icon
+          @click="handleRefresh()"
+          icon="fa-solid fa-rotate"
+          title="Refresh to today"
+          class="pointer"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+        <font-awesome-icon
+          v-if="task.priority !== taskPriorities.critical"
+          @click="handlePostpone()"
+          icon="fa-solid fa-hourglass-start"
+          :title="getPostponeTitle()"
+          class="pointer"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+        <span
+          class="is-size-7-5 has-text-grey-lighter"
+          :class="{ 'is-hidden': task.isCompleted }"
+          >●</span
+        >
+        <font-awesome-icon
+          v-if="task.priority !== taskPriorities.critical"
           @click="
             handlePriorityChange(
               task.priority === taskPriorities.horizon
@@ -36,10 +99,13 @@
                 : taskPriorities.critical
             )
           "
-        >
-          ▲
-        </button>
-        <button
+          icon="fa-solid fa-up-long"
+          :title="getPromoteTitle()"
+          class="pointer"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+        <font-awesome-icon
+          v-if="task.priority !== taskPriorities.horizon"
           @click="
             handlePriorityChange(
               task.priority === taskPriorities.critical
@@ -47,32 +113,31 @@
                 : taskPriorities.horizon
             )
           "
-        >
-          ▼
-        </button>
+          icon="fa-solid fa-down-long"
+          :title="getDemoteTitle()"
+          class="pointer"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+
         <!-- <div>{{ task.id }}</div> -->
       </div>
     </div>
+    <!-- </div> -->
     <!-- <div v-else class="columns is-variable is-2 mb-4" > -->
-    <form
-      v-else
-      class="columns is-variable is-2 mb-4"
-      @submit.prevent="handleSave()"
-    >
-      <div class="field column is-3">
+    <div v-else class="columns ml-0 mr-0 mb-4 is-variable is-2  has-background-light">
+      <div class="column is-3 pl-2">
         <input
           v-model="formValues.title"
           type="text"
           id="title"
           ref="inputTitle"
           placeholder="What you intend to do"
-          class="input is-size-6-5"
+          class="input is-size-7"
         />
-        <p class="help is-success">This username is available</p>
       </div>
 
-      <div class="field column is-2">
-        <div class="select">
+      <div class="column is-2">
+        <div class="select is-size-7">
           <select v-model="formValues.priority" id="priority">
             <option :value="taskPriorities.critical">Critical</option>
             <option :value="taskPriorities.opportunity" default>
@@ -83,44 +148,57 @@
         </div>
       </div>
 
-      <div class="field column is-2">
+      <div class="column is-2">
         <input
           v-model="formValues.startDate"
           type="date"
+          ref="inputStartDate"
           id="start-date"
-          class="input is-size-6-5"
+          class="input is-size-7"
         />
-        <p class="help is-success">This username is available</p>
       </div>
 
-      <div class="field column is-2">
+      <div class="column is-2">
         <input
           v-model="formValues.dueDate"
           type="date"
+          ref="inputDueDate"
           id="due-date"
-          class="input is-size-6-5"
+          class="input is-size-7"
         />
-        <p class="help is-success">This username is available</p>
       </div>
 
-      <div class="field column actions">
-        <button @click="handleSave()">Save</button>
-        <button @click="handleUndo()">Undo</button>
+      <div class="column actions has-background-white-bis">
+        <font-awesome-icon
+          @click="handleSave()"
+          icon="fa-solid fa-circle-check"
+          title="Update task"
+          class="pointer has-text-primary"
+        />
+        <font-awesome-icon
+          @click="toggleEdit()"
+          icon="fa-solid fa-circle-xmark"
+          title="Undo changes"
+          class="pointer has-text-danger"
+        />
       </div>
-    </form>
-
-    <!-- </div> -->
+    </div>
   </section>
 </template>
 
 <script setup>
 import { useTaskStore, taskPriorities } from "../stores";
-import { defineProps, onMounted, ref } from "vue";
+import { defineProps, onMounted, onUpdated, ref, computed } from "vue";
 const taskStore = useTaskStore();
 const props = defineProps(["id"]);
 const task = taskStore.getTask(props.id);
 const isEdit = ref(false);
 let checkboxDone;
+
+const inputTitle = ref(null);
+const inputStartDate = ref(null);
+const inputDueDate = ref(null);
+let focusInputRef = null;
 
 const formValues = ref({
   isCompleted: task.isCompleted,
@@ -130,10 +208,57 @@ const formValues = ref({
   dueDate: task.dueDate,
 });
 
-const handleCompleted = () => {
+const classesTaskCompleted = computed(() => {
+  const classes = {
+    "is-linethrough": task.isCompleted,
+    "has-text-grey-light": task.isCompleted,
+    "has-background-white-bis": task.isCompleted,
+  };
+  return classes;
+});
+
+const getPostponeDate = () => {
+  const date = new Date(task.startDate);
+  let day;
+
+  // If Horizon: postpone until sunday after startDate
+  // Else: postpone until day after startDate
+  if (task.priority === taskPriorities.horizon)
+    day = date.getDate() - date.getDay() + 7;
+  else day = date.getDate() + 1;
+
+  return new Date(date.setDate(day)).toISOString().split("T")[0];
+};
+
+const getPostponeTitle = () => {
+  let title = "Postpone to ";
+  const formattedDate = taskStore
+    .getFormattedDate(getPostponeDate())
+    .toLowerCase();
+  if (task.priority === taskPriorities.horizon)
+    title += `following Sunday (${formattedDate})`;
+  else title += formattedDate;
+  return title;
+};
+
+const getPromoteTitle = () => {
+  let title = "Advance to ";
+  if (task.priority === taskPriorities.opportunity) title += "Critical";
+  else title += "Opportunity";
+  return title;
+};
+
+const getDemoteTitle = () => {
+  let title = "Push down to ";
+  if (task.priority === taskPriorities.opportunity) title += "Horizon";
+  else title += "Opportunity";
+  return title;
+};
+
+const handleCompleted = (newStatus) => {
   const fieldValues = {
-    isCompleted: form.value.isCompleted,
-    completedAt: formValues.value.isCompleted ? Date.now() : null,
+    isCompleted: newStatus,
+    completedAt: newStatus ? Date.now() : null,
   };
   taskStore.modifyTask(task, fieldValues);
 };
@@ -143,14 +268,6 @@ const handleSave = () => {
   if (task.priority !== formValues.priority)
     formValues.refreshedAt = Date.now();
   taskStore.modifyTask(task, formValues.value);
-  toggleEdit();
-};
-
-const handleUndo = () => {
-  // toggleEdit();
-};
-
-const handleEdit = () => {
   toggleEdit();
 };
 
@@ -171,21 +288,10 @@ const handleRefresh = () => {
 };
 
 const handlePostpone = () => {
-  const date = new Date(task.startDate);
-  let day;
-
-  // If Horizon: postpone until sunday after startDate
-  // Else: postpone until day after startDate
-  if (task.priority === taskPriorities.horizon)
-    day = date.getDate() - date.getDay() + 7;
-  else day = date.getDate() + 1;
-  console.log("day", date.setDate(day));
-  const fieldValues = {
-    startDate: new Date(date.setDate(day)).toISOString().split("T")[0],
+  taskStore.modifyTask(task, {
+    startDate: getPostponeDate(),
     refreshedAt: Date.now(),
-  };
-
-  taskStore.modifyTask(task, fieldValues);
+  });
 };
 
 const handlePriorityChange = (newPriority) => {
@@ -197,16 +303,16 @@ const handlePriorityChange = (newPriority) => {
   taskStore.modifyTask(task, fieldValues);
 };
 
-const toggleEdit = () => {
+const toggleEdit = (inputRef) => {
   isEdit.value = !isEdit.value;
-  checkboxDone.disabled = !checkboxDone.disabled;
   if (isEdit.value) {
     formValues.value.isCompleted = task.isCompleted;
     formValues.value.title = task.title;
     formValues.value.priority = task.priority;
     formValues.value.startDate = task.startDate;
     formValues.value.dueDate = task.dueDate;
-  }
+    focusInputRef = inputRef;
+  } else focusInputRef = null;
   // TODO - estilo dinámico
   // 1. hide/disable checkbox
   // 2. hide edit/trash/1mtd
@@ -216,53 +322,89 @@ const toggleEdit = () => {
 onMounted(() => {
   checkboxDone = document.getElementById("checkbox-done");
 });
+
+onUpdated(() => {
+  if (!focusInputRef) return;
+  switch (focusInputRef) {
+    case "inputTitle":
+      inputTitle.value.focus();
+      break;
+    case "inputStartDate":
+      inputStartDate.value.focus();
+      break;
+    case "inputDueDate":
+      inputDueDate.value.focus();
+      break;
+  }
+  focusInputRef = null;
+});
 </script>
 
 <style scoped>
-section {
+/* section {
   background-color: #efefef;
-}
+} */
 
-.task {
+/* .row-adjust {
+  height: 2.875rem;
+} */
+
+/* .task {
   transition: background-color 300ms;
-}
+} */
 
-.task:hover {
+/* .task-title {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+} */
+
+/* .task-title > :first-child {
+  max-width: 2rem;
+} */
+
+/* .task-title > :last-child {
+  flex: 1;
+} */
+
+/* .task-field {
+  cursor: pointer;
+} */
+
+/* .task:hover {
   background-color: hsl(171, 100%, 96%);
   transition: background-color 300ms;
-  cursor: pointer;
-}
+} */
 
-.column {
+/* .column {
   padding-block: 0.5rem;
-}
+} */
 
 form,
-.task-info,
 .actions {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.875rem;
   align-items: center;
-}
-
-.task-info:hover {
-  cursor: pointer;
 }
 
 form {
   background-color: aquamarine;
 }
 
-.actions {
-  background-color: lightgoldenrodyellow;
+svg {
+  height: 1.125rem;
+  height: 18px;
 }
 
-/* .icon > i {
-  transition: all 250ms;
+/* svg:hover {
+  height: 1.25rem;
 } */
 
-.icon:hover > i {
-  font-size: 1.25rem;
+/* .fa-circle-check {
+  color: hsl(171, 100%, 41%)
+} */
+
+.fa-pen-to-square:hover {
   color: green;
   /* transition: all 250ms; */
 
@@ -271,4 +413,8 @@ form {
   transition-timing-function: linear;
   transition-delay: 0; */
 }
+
+/* .columns {
+  background-color: #efefef;
+} */
 </style>

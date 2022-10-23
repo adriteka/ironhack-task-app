@@ -12,11 +12,11 @@ const routes = [
         name: "current",
         component: () => import("../views/CurrentTasks.vue"),
       },
-      // {
-      //   path: "future",
-      //   name: "future",
-      //   component: () => import("../views/FutureTasks.vue"),
-      // },
+      {
+        path: "future",
+        name: "future",
+        component: () => import("../views/FutureTasks.vue"),
+      },
       // {
       //   path: "archived",
       //   name: "archived",

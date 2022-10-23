@@ -20,13 +20,20 @@
   font-size: 0.6875rem; /* 11px */
 }
 
+.is-linethrough {
+  text-decoration: 2px line-through rgba(0, 209, 178, 0.25);
+}
+
+.pointer {
+  cursor: pointer;
+}
+
 /* html {
   font-size: 0.875rem;
 } */
 
 body {
   background-color: #efefef;
-  height: 100vh;
   padding-bottom: 6rem;
 }
 

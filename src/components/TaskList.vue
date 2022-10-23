@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section v-if="props.tasks.length">
     <header
       class="is-flex is-justify-content-space-between is-align-items-center"
     >
@@ -7,7 +7,7 @@
       <p>{{ qtyTasks }}</p>
     </header>
     <div
-      class="columns is-variable is-2 is-size-7-5 is-uppercase has-text-weight-semibold"
+      class="columns ml-0 mr-0 is-variable is-2 is-size-7-5 is-uppercase has-text-weight-semibold has-text-grey"
     >
       <p class="column is-5 pt-2">Task</p>
       <p class="column is-2 pt-2">Start date</p>
@@ -36,8 +36,10 @@ const qtyTasks = computed(() => {
   margin-bottom: 0;
 }
 
-.tasklist-heading > p {
-  text-transform: uppercase;
+.tasklist-heading > :last-child {
+  flex: 1;
+  /* padding-inline: 0.375rem; */
+  background-color: aquamarine;
 }
 
 header {

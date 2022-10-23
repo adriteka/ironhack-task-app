@@ -96,10 +96,10 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-div {
+/* div {
   overflow: hidden;
   overflow-y: auto;
   max-height: 90vh;
-}
+} */
 
 </style>
