@@ -2,10 +2,10 @@
   <div class="tabs is-right is-size-7">
     <ul>
       <li :class="{ 'is-active': routeName === 'current' }">
-        <router-link :to="{ name: 'current' }"> Current tasks</router-link>
+        <router-link :to="{ name: 'current' }"> Current Tasks</router-link>
       </li>
       <li :class="{ 'is-active': routeName === 'future' }">
-        <router-link :to="{ name: 'future' }">Future tasks</router-link>
+        <router-link :to="{ name: 'future' }">Future Tasks</router-link>
       </li>
       <li><a>Completed</a></li>
       <li><a>Trashed</a></li>

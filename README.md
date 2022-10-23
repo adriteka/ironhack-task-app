@@ -1,2 +1,3 @@
-Todo management app
-[BCN-FT-092022} Ironhack Front-End Bootcamp Final Project
+- Ironhack Front-End Bootcamp Final Project
+- [BCN-FT-092022}
+- To-Do List Management Web App

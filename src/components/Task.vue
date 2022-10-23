@@ -297,7 +297,7 @@ const handlePostpone = () => {
 const handlePriorityChange = (newPriority) => {
   const fieldValues = {
     priority: newPriority,
-    startDate: new Date().toISOString().split("T")[0],
+    // startDate: new Date().toISOString().split("T")[0],
     refreshedAt: Date.now(),
   };
   taskStore.modifyTask(task, fieldValues);

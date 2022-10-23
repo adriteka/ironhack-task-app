@@ -52,8 +52,8 @@
         <p class="help is-success">This username is available</p>
       </div>
       <div class="field column">
-        <label class="label is-size-6-5" for="create-button">Action</label>
-        <button type="submit" class="button is-size-6-5" id="create-button">
+        <label class="label is-size-6-5 is-invisible" for="create-button">Action</label>
+        <button type="submit" class="button is-primary is-size-6-5" id="create-button">
           Create
         </button>
       </div>
