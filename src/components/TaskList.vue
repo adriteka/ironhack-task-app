@@ -1,96 +1,56 @@
 <template>
   <section>
-    <section v-if="tasksCritical.length">
-      <header>
-        <h3>Critical tasks</h3>
-        <div>Id</div>
-        <div>Done</div>
-        <div>Action</div>
-        <div>Priority</div>
-        <div>Start Date</div>
-        <div>Due Date</div>
-        <div>Actions</div>
-      </header>
-      <Task v-for="t in tasksCritical" :id="t.id" :key="t.id" />
-    </section>
-    <section>
-      <header>
-        <h3>Opportunity tasks</h3>
-        <div>Id</div>
-        <div>Done</div>
-        <div>Action</div>
-        <div>Priority</div>
-        <div>Start Date</div>
-        <div>Due Date</div>
-        <div>Actions</div>
-      </header>
-      <Task v-for="t in tasksOpportunity" :id="t.id" :key="t.id" />
-    </section>
-    <section>
-      <header>
-        <h3>Horizon tasks</h3>
-        <div>Id</div>
-        <div>Done</div>
-        <div>Task</div>
-        <div>Priority</div>
-        <div>Start Date</div>
-        <div>Due Date</div>
-        <div>Actions</div>
-      </header>
-      <Task v-for="t in tasksHorizon" :id="t.id" :key="t.id" />
-    </section>
+    <header
+      class="is-flex is-justify-content-space-between is-align-items-center"
+    >
+      <h3 class="title is-5 tasklist-title"><slot></slot></h3>
+      <p>{{ qtyTasks }}</p>
+    </header>
+    <div
+      class="columns is-variable is-2 is-size-7-5 is-uppercase has-text-weight-semibold"
+    >
+      <p class="column is-5 pt-2">Task</p>
+      <p class="column is-2 pt-2">Start date</p>
+      <p class="column is-2 pt-2">Due date</p>
+      <p class="column pt-2">Actions</p>
+    </div>
+    <Task v-for="t in props.tasks" :id="t.id" :key="t.id" />
   </section>
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
-import { useTaskStore, taskPriorities } from "../stores";
-import Task from "./Task.vue";
-const taskStore = useTaskStore();
+import { defineProps, computed } from "vue";
+import Task from "../components/Task.vue";
+const props = defineProps(["tasks"]);
 
-const taskSort = (a, b) => {
-  if (a.startDate < b.startDate) return 1;
-  else if (a.startDate > b.startDate) return -1;
-  else if (a.refreshedAt < b.refreshedAt) return 1;
-  else if (a.refreshedAt > b.refreshedAt) return -1;
-  else return 0;
-};
-
-const tasksCritical = computed(() => {
-  console.log("computed critical");
-
-  return taskStore.tasks
-    .filter((t) => t.priority === taskPriorities.critical)
-    .sort((a, b) => {
-      return taskSort(a, b);
-    });
-});
-const tasksOpportunity = computed(() => {
-  console.log("computed opportunity");
-  return taskStore.tasks
-    .filter((t) => t.priority === taskPriorities.opportunity)
-    .sort((a, b) => {
-      return taskSort(a, b);
-    });
-});
-const tasksHorizon = computed(() => {
-  console.log("computed horizon");
-  return taskStore.tasks
-    .filter((t) => t.priority === taskPriorities.horizon)
-    .sort((a, b) => {
-      return taskSort(a, b);
-    });
-});
-
-onMounted(async () => {
-  // if (!taskStore.tasks)
-  await taskStore.getAllTasks();
+const qtyTasks = computed(() => {
+  const qty = props.tasks.length;
+  if (!qty) return "";
+  else if (qty === 1) return "1 task";
+  else return `${qty} tasks`;
 });
 </script>
 
 <style scoped>
+.tasklist-title {
+  margin-bottom: 0;
+}
+
+.tasklist-heading > p {
+  text-transform: uppercase;
+}
+
 header {
-  display: flex;
-  gap: 1rem;
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid black;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+header p {
+  color: gray;
 }
 </style>

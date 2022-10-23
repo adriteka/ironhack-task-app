@@ -10,47 +10,50 @@ export const taskPriorities = {
 export const useTaskStore = defineStore("tasks", {
   state: () => ({
     tasks: [],
-    // tasksCritical: [],
-    // tasksOpportunity: [],
-    // tasksHorizon: [],
-    // TODO tasksArchived: [],
-    // TODO tasksTrashed: [] isTrashed
   }),
   actions: {
     getTask(id) {
       return this.tasks.find((t) => t.id === id);
     },
 
-    // removeTaskFromList(id, priority) {
-    //   let arr = [];
-    //   switch (priority) {
-    //     case taskPriorities.critical:
-    //       arr = this.tasksCritical;
-    //       break;
-    //     case taskPriorities.opportunity:
-    //       arr = this.tasksOpportunity;
-    //       break;
-    //     case taskPriorities.horizon:
-    //       arr = this.tasksHorizon;
-    //       break;
-    //   }
-    //   const index = arr.findIndex((t) => {
-    //     t.id === id;
-    //   });
-    //   arr.splice(index, 1);
-    // },
+    getPriorityName(num) {
+      switch (num) {
+        case taskPriorities.critical:
+          return "Critical";
+        case taskPriorities.opportunity:
+          return "Opportunity";
+        default:
+          return "Horizon";
+      }
+    },
+
+    getFormattedDate(d) {
+      if (!d) return "";
+      const date = new Date(d);
+      const dateStr = date.toDateString();
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (dateStr === yesterday.toDateString()) return "Yesterday";
+
+      const today = new Date();
+      today.setDate(today.getDate());
+      if (dateStr === today.toDateString()) return "Today";
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      if (dateStr === tomorrow.toDateString()) return "Tomorrow";
+
+      return date.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      });
+    },
 
     async getAllTasks() {
-      this.tasks = await selectAllTasks();
-      // this.tasksCritical = this.tasks.filter(
-      //   (t) => t.priority === taskPriorities.critical
-      // );
-      // this.tasksOpportunity = this.tasks.filter(
-      //   (t) => t.priority === taskPriorities.opportunity
-      // );
-      // this.tasksHorizon = this.tasks.filter(
-      //   (t) => t.priority === taskPriorities.horizon
-      // );
+      if (!this.tasks.length) this.tasks = await selectAllTasks();
+      return this.tasks;
     },
 
     async createTask(fieldValues) {

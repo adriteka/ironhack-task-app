@@ -1,6 +1,9 @@
 <template>
-  <h1>1MTD List Manager</h1>
-  <router-view />
+  <!-- header  -->
+  <main class="is-size-6-5">
+    <router-view />
+  </main>
+  <!-- footer -->
 </template>
 
 <script setup></script>

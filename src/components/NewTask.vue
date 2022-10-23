@@ -1,42 +1,68 @@
 <template>
-  <form @submit.prevent="handleSubmit()">
-    <table>
-      <thead>
-        <tr>
-          <th><label for="title">New Task</label></th>
-          <th><label for="priority">Urgency</label></th>
-          <th><label for="start-date">Start Date</label></th>
-          <th><label for="due-date">Due Date</label></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input v-model="formValues.title" type="text" id="title" /></td>
-          <td>
-            <select v-model="formValues.priority" id="priority">
-              <option :value="taskPriorities.critical">Critical</option>
-              <option :value="taskPriorities.opportunity" default>
-                Opportunity
-              </option>
-              <option :value="taskPriorities.horizon">Horizon</option>
-            </select>
-          </td>
-          <td>
-            <input v-model="formValues.startDate" type="date" id="start-date" />
-          </td>
-          <td>
-            <input v-model="formValues.dueDate" type="date" id="due-date" />
-          </td>
-          <td><button type="submit">Create</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </form>
+  <section class="box">
+    <h3 class="title is-5">New task</h3>
+    <form @submit.prevent="handleSubmit()" class="columns is-variable is-2">
+      <div class="field column is-3">
+        <label class="label is-size-6-5" for="title">Task</label>
+        <input
+          v-model="formValues.title"
+          type="text"
+          id="title"
+          ref="inputTitle"
+          placeholder="What you intend to do"
+          class="input is-size-6-5"
+        />
+        <p class="help is-success">This username is available</p>
+      </div>
+
+      <div class="field column is-2">
+        <label class="label is-size-6-5" for="priority">Urgency</label>
+        <div class="select">
+          <select v-model="formValues.priority" id="priority">
+            <option :value="taskPriorities.critical">Critical</option>
+            <option :value="taskPriorities.opportunity" default>
+              Opportunity
+            </option>
+            <option :value="taskPriorities.horizon">Horizon</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field column is-2">
+        <label class="label is-size-6-5" for="start-date">Start date</label>
+
+        <input
+          v-model="formValues.startDate"
+          type="date"
+          id="start-date"
+          class="input is-size-6-5"
+        />
+
+        <p class="help is-success">This username is available</p>
+      </div>
+
+      <div class="field column is-2">
+        <label class="label is-size-6-5" for="due-date">Due date</label>
+        <input
+          v-model="formValues.dueDate"
+          type="date"
+          id="due-date"
+          class="input is-size-6-5"
+        />
+        <p class="help is-success">This username is available</p>
+      </div>
+      <div class="field column">
+        <label class="label is-size-6-5" for="create-button">Action</label>
+        <button type="submit" class="button is-size-6-5" id="create-button">
+          Create
+        </button>
+      </div>
+    </form>
+  </section>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuthStore, useTaskStore, taskPriorities } from "../stores";
 
 const authStore = useAuthStore();
@@ -51,12 +77,14 @@ const formValues = ref({
   dueDate: null,
 });
 
+const inputTitle = ref(null);
+
 const handleSubmit = () => {
   // TODO - validate form
   console.log("handleSubmit formValues.value", formValues.value);
   taskStore.createTask(formValues.value);
-
   resetForm();
+  inputTitle.value.focus();
 };
 
 const resetForm = () => {
@@ -72,6 +100,10 @@ const resetForm = () => {
   // form.value.startDate.error = false;
   // form.value.dueDate.error = false;
 };
+
+onMounted(() => {
+  inputTitle.value.focus();
+});
 </script>
 
 <style scoped></style>

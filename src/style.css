@@ -1,4 +1,40 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.container {
+  padding-inline: 1rem;
+  margin-inline: auto;
+}
+
+.is-size-6-5 {
+  font-size: 0.875rem; /* 14px */
+}
+
+.is-size-7-5 {
+  font-size: 0.6875rem; /* 11px */
+}
+
+/* html {
+  font-size: 0.875rem;
+} */
+
 body {
-    width: 95%;
-    margin: 1rem auto;
+  background-color: #efefef;
+  height: 100vh;
+  padding-bottom: 6rem;
+}
+
+label {
+  white-space: nowrap;
+}
+
+select,
+.select {
+  width: 100%;
 }

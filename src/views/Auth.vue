@@ -1,5 +1,5 @@
 <template>
-  <h2>Proseso de autenticasión</h2>
+  <h1>Authentication</h1>
   <router-view></router-view>
 </template>
 

@@ -4,7 +4,25 @@ const routes = [
   {
     path: "/",
     name: "home",
+    redirect: { name: "current" },
     component: () => import("../views/Home.vue"),
+    children: [
+      {
+        path: "current",
+        name: "current",
+        component: () => import("../views/CurrentTasks.vue"),
+      },
+      // {
+      //   path: "future",
+      //   name: "future",
+      //   component: () => import("../views/FutureTasks.vue"),
+      // },
+      // {
+      //   path: "archived",
+      //   name: "archived",
+      //   component: () => import("../views/ArchivedTasks.vue"),
+      // },
+    ],
   },
   {
     path: "/auth",
@@ -22,12 +40,12 @@ const routes = [
         name: "signup",
         component: () => import("../views/Signup.vue"),
       },
-          // TODO Bonus
-    // {
-    //   path: "forgot",
-    //   name: "forgot",
-    //   component: () => import("../views/Forgot.vue"),
-    // },
+      // TODO Bonus
+      // {
+      //   path: "forgot",
+      //   name: "forgot",
+      //   component: () => import("../views/Forgot.vue"),
+      // },
     ],
   },
 ];
