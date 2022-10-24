@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
   {
@@ -17,11 +17,11 @@ const routes = [
         name: "future",
         component: () => import("../views/FutureTasks.vue"),
       },
-      // {
-      //   path: "archived",
-      //   name: "archived",
-      //   component: () => import("../views/ArchivedTasks.vue"),
-      // },
+      {
+        path: "archived",
+        name: "archived",
+        component: () => import("../views/ArchivedTasks.vue"),
+      },
     ],
   },
   {
@@ -51,7 +51,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 });
 

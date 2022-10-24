@@ -1,20 +1,23 @@
 <template>
-  <section v-if="props.tasks.length">
+  <section>
     <header
       class="is-flex is-justify-content-space-between is-align-items-center"
     >
       <h3 class="title is-5 tasklist-title"><slot></slot></h3>
       <p>{{ qtyTasks }}</p>
     </header>
-    <div
-      class="columns ml-0 mr-0 is-variable is-2 is-size-7-5 is-uppercase has-text-weight-semibold has-text-grey"
-    >
-      <p class="column is-5 pt-2">Task</p>
-      <p class="column is-2 pt-2">Start date</p>
-      <p class="column is-2 pt-2">Due date</p>
-      <p class="column pt-2">Actions</p>
+    <div v-if="props.tasks.length">
+      <div
+        class="columns ml-0 mr-0 is-variable is-2 is-size-7-5 is-uppercase has-text-weight-semibold has-text-grey"
+      >
+        <p class="column is-5 pt-2">Task</p>
+        <p class="column is-2 pt-2">Start date</p>
+        <p class="column is-2 pt-2">Due date</p>
+        <p class="column pt-2">Actions</p>
+      </div>
+      <Task v-for="t in props.tasks" :id="t.id" :key="t.id" />
     </div>
-    <Task v-for="t in props.tasks" :id="t.id" :key="t.id" />
+    <div v-else class="empty"><p class="has-text-grey-light is-size-6">Nothing to work with on this front</p></div>
   </section>
 </template>
 
@@ -25,7 +28,7 @@ const props = defineProps(["tasks"]);
 
 const qtyTasks = computed(() => {
   const qty = props.tasks.length;
-  if (!qty) return "";
+  if (!qty) return "No tasks";
   else if (qty === 1) return "1 task";
   else return `${qty} tasks`;
 });
@@ -54,5 +57,9 @@ header {
 
 header p {
   color: gray;
+}
+
+.empty > p {
+  text-align: center;
 }
 </style>

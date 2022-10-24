@@ -48,8 +48,7 @@ export const signUp = async (email, password) => {
     password,
   });
 
-  if (error) throw `${error.message} (${error.status})`;
-  return data.user.id;
+  if (error) console.log("signUp error", error.message, error.status);
 };
 
 export const logIn = async (email, password) => {

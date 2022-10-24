@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { logIn, logOut, signUp } from "../api";
+import { signUp, logIn, logOut } from "../api";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -13,11 +13,8 @@ export const useAuthStore = defineStore("auth", {
     // priorityStyle: "1mtd"
   }),
   actions: {
-    async signup() {
+    async signUp(email, password) {
       const userId = await signUp(email, password);
-      this.userId = userId;
-      this.email = email;
-      this.isAuth = true;
     },
     async logIn(email, password) {
       const userId = await logIn(email, password);
@@ -25,12 +22,21 @@ export const useAuthStore = defineStore("auth", {
       this.email = email;
       this.isAuth = true;
     },
-    async logOut() {
+    async fueralogOut() {
+      await logOut();
+      console.log("logged out");
       this.userId = undefined;
       this.email = undefined;
       this.name = undefined;
       this.isAuth = false;
-      await logOut();
     },
   },
+  persist: {
+		enabled: true,
+		strategies: [{
+				key: "auth",
+				storage: localStorage,
+			},
+		],
+	},
 });

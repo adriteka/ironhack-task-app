@@ -10,6 +10,7 @@ export const taskPriorities = {
 export const useTaskStore = defineStore("tasks", {
   state: () => ({
     tasks: [],
+    taskBeingEdited: undefined,
   }),
   actions: {
     getTask(id) {
@@ -79,30 +80,20 @@ export const useTaskStore = defineStore("tasks", {
       // removeTaskFromList(t.id, t.priority)
     },
 
-    async archiveTask(t) {
-      const fieldValues = {
-        isArchived: true,
-        // TODO isCompleted: true,
-      };
-      // TODO task.isCompleted = true;
-      await updateTask(t.id, fieldValues);
-      t.isArchived = true;
-    },
+    // async deferTask(t, newDate) {
+    //   const fieldValues = {
+    //     startDate: newDate,
+    //     refreshedAt: new Date(),
+    //   };
+    //   await updateTask(t.id, fieldValues);
+    // },
 
-    async deferTask(t, newDate) {
-      const fieldValues = {
-        startDate: newDate,
-        refreshedAt: new Date(),
-      };
-      await updateTask(t.id, fieldValues);
-    },
-
-    async completeTask(t) {
-      const fieldValues = {
-        isCompleted: true,
-        completedAt: new Date(),
-      };
-      await updateTask(t.id, fieldValues);
-    },
+    // async completeTask(t) {
+    //   const fieldValues = {
+    //     isCompleted: true,
+    //     completedAt: new Date(),
+    //   };
+    //   await updateTask(t.id, fieldValues);
+    // },
   }, // end of actions
 });

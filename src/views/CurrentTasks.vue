@@ -31,7 +31,7 @@ const taskSortAsc = (a, b) => {
 const tasksCritical = computed(() => {
   console.log("computed critical");
   return taskStore.tasks
-    .filter((t) => t.priority === taskPriorities.critical)
+    .filter((t) => t.priority === taskPriorities.critical && !t.isArchived)
     .sort((a, b) => {
       return taskSortDesc(a, b);
     });
@@ -43,6 +43,7 @@ const tasksOpportunity = computed(() => {
     .filter(
       (t) =>
         t.priority === taskPriorities.opportunity &&
+        !t.isArchived &&
         new Date(t.startDate) <= Date.now()
     )
     .sort((a, b) => {
@@ -56,6 +57,7 @@ const tasksHorizon = computed(() => {
     .filter(
       (t) =>
         t.priority === taskPriorities.horizon &&
+        !t.isArchived &&
         new Date(t.startDate) <= Date.now()
     )
     .sort((a, b) => {
@@ -101,5 +103,4 @@ onMounted(async () => {
   overflow-y: auto;
   max-height: 90vh;
 } */
-
 </style>

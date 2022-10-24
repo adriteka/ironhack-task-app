@@ -1,5 +1,4 @@
 <template>
-  <h1>Task Dashboard</h1>
   <div v-if="authStore.isAuth" class="container">
     <NewTask />
     <section class="box">
@@ -18,7 +17,7 @@ import NavBarTasks from "../components/NavBarTasks.vue";
 const router = useRouter();
 const authStore = useAuthStore();
 
-if (!authStore.isAuth) router.push({ name: "login" });
+if (!authStore.isAuth) router.push({ name: "login", params: { signup: 0 } });
 </script>
 
 <style scoped></style>

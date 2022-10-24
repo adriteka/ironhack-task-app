@@ -1,21 +1,16 @@
 <template>
   <section>
-    <!-- TODO toggleEdit en columna, no toda la row -->
-    <!-- @dblclick="toggleEdit()" -->
-    <!-- <div v-if="!isEdit" class="task-info" @dblclick="toggleEdit()"> -->
-
-    <!-- <div v-if="!isEdit" class="row-adjust"> -->
-    <!-- <div  v-if="!isEdit" class="columns"> -->
+    <!-- NO TASK being edited -->
     <div
-      v-if="!isEdit"
+      v-if="!taskStore.taskBeingEdited"
       class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
       :class="classesTaskCompleted"
     >
       <p class="column is-5 pt-4 pb-4">
         <span
           @dblclick="toggleEdit('inputTitle')"
-          :class="{ pointer: !task.isCompleted }"
-          :title="task.isCompleted ? '' : 'Double-click to edit'"
+          :class="{ 'cursor-pointer': !task.isCompleted }"
+          :title="!task.isCompleted ? 'Double-click to edit' : ''"
           >{{ task.title }}</span
         >
       </p>
@@ -23,46 +18,67 @@
       <p class="column is-2 pt-4 pb-4">
         <span
           @dblclick="toggleEdit('inputStartDate')"
-          :class="{ pointer: !task.isCompleted }"
-          :title="task.isCompleted ? '' : 'Double-click to edit'"
+          :class="{ 'cursor-pointer': !task.isCompleted }"
+          :title="!task.isCompleted ? 'Double-click to edit' : ''"
           >{{ taskStore.getFormattedDate(task.startDate) }}</span
         >
       </p>
+
       <p class="column is-2 pt-4 pb-4">
         <span
           @dblclick="toggleEdit('inputDueDate')"
-          :class="{ pointer: !task.isCompleted }"
-          :title="task.isCompleted ? '' : 'Double-click to edit'"
+          :class="{ 'cursor-pointer': !task.isCompleted }"
+          :title="!task.isCompleted ? 'Double-click to edit' : ''"
           >{{ taskStore.getFormattedDate(task.dueDate) }}</span
         >
       </p>
-      <div class="actions column pt-4 pb-4 has-background-white-bis">
+      <div
+        class="actions column pt-4 pb-4 has-background-white-bis icon-pointer"
+      >
         <font-awesome-icon
-          v-if="task.isCompleted"
+          v-if="task.isCompleted && !task.isArchived"
           @click="handleCompleted(false)"
           icon="fa-regular fa-square-check"
           title="Mark as pending"
-          class="pointer has-text-primary"
+          class="has-text-primary"
         />
         <font-awesome-icon
-          v-else
+          v-else-if="!task.isArchived"
           @click="handleCompleted(true)"
           icon="fa-regular fa-square"
           title="Mark as completed"
-          class="pointer has-text-primary"
+          class="has-text-primary"
         />
+
         <font-awesome-icon
           @click="toggleEdit()"
           icon="fa-solid fa-pen-to-square"
           title="Edit"
-          class="pointer has-text-info"
+          class="has-text-info"
           :class="{ 'is-hidden': task.isCompleted }"
         />
+
         <font-awesome-icon
+          v-if="task.isCompleted && !task.isArchived"
+          @click="handleArchive()"
+          icon="fa-solid fa-arrow-right-to-bracket"
+          title="Archive"
+          class="rotate-90 has-text-info"
+        />
+        <font-awesome-icon
+          v-else-if="task.isArchived"
+          @click="handleArchive()"
+          icon="fa-solid fa-arrow-up-from-bracket"
+          title="Restore"
+          class="has-text-info"
+        />
+
+        <font-awesome-icon
+          v-if="!task.isCompleted || task.isArchived"
           @click="handleDelete()"
           icon="fa-solid fa-trash-can"
-          title="Trash"
-          class="pointer has-text-danger"
+          title="Delete"
+          class="has-text-danger"
         />
 
         <span
@@ -74,7 +90,7 @@
           @click="handleRefresh()"
           icon="fa-solid fa-rotate"
           title="Refresh to today"
-          class="pointer"
+          class="'cursor-pointer'"
           :class="{ 'is-hidden': task.isCompleted }"
         />
         <font-awesome-icon
@@ -82,49 +98,97 @@
           @click="handlePostpone()"
           icon="fa-solid fa-hourglass-start"
           :title="getPostponeTitle()"
-          class="pointer"
+          class="'cursor-pointer'"
           :class="{ 'is-hidden': task.isCompleted }"
         />
+        <font-awesome-icon
+          v-if="task.priority !== taskPriorities.critical"
+          @click="handlePriorityAdvance()"
+          icon="fa-solid fa-angles-up"
+          :title="getPromoteTitle()"
+          class="'cursor-pointer'"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+      </div>
+    </div>
+
+    <!-- A DIFFERENT TASK being edited -->
+    <div
+      v-else-if="taskStore.taskBeingEdited !== task"
+      class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
+      :class="classesTaskCompleted"
+    >
+      <p class="column is-5 pt-4 pb-4">
+        {{ task.title }}
+      </p>
+      <p class="column is-2 pt-4 pb-4">
+        {{ taskStore.getFormattedDate(task.startDate) }}
+      </p>
+      <p class="column is-2 pt-4 pb-4">
+        {{ taskStore.getFormattedDate(task.dueDate) }}
+      </p>
+
+      <div
+        class="actions column pt-4 pb-4 has-background-white-bis has-text-grey-light icon-not-allowed"
+      >
+        <font-awesome-icon
+          v-if="task.isCompleted"
+          icon="fa-regular fa-square-check"
+        />
+        <font-awesome-icon
+          v-else-if="!task.isArchived"
+          icon="fa-regular fa-square"
+        />
+
+        <font-awesome-icon
+          icon="fa-solid fa-pen-to-square"
+          title="Edit"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
+
+        <font-awesome-icon
+          v-if="task.isCompleted && !task.isArchived"
+          icon="fa-solid fa-arrow-right-to-bracket"
+          class="rotate-90"
+        />
+        <font-awesome-icon
+          v-else-if="task.isArchived"
+          icon="fa-solid fa-arrow-up-from-bracket"
+        />
+
+        <font-awesome-icon
+          v-if="!task.isCompleted || task.isArchived"
+          icon="fa-solid fa-trash-can"
+        />
+
         <span
           class="is-size-7-5 has-text-grey-lighter"
           :class="{ 'is-hidden': task.isCompleted }"
           >●</span
         >
         <font-awesome-icon
-          v-if="task.priority !== taskPriorities.critical"
-          @click="
-            handlePriorityChange(
-              task.priority === taskPriorities.horizon
-                ? taskPriorities.opportunity
-                : taskPriorities.critical
-            )
-          "
-          icon="fa-solid fa-up-long"
-          :title="getPromoteTitle()"
-          class="pointer"
+          icon="fa-solid fa-rotate"
+          title="Refresh to today"
           :class="{ 'is-hidden': task.isCompleted }"
         />
         <font-awesome-icon
-          v-if="task.priority !== taskPriorities.horizon"
-          @click="
-            handlePriorityChange(
-              task.priority === taskPriorities.critical
-                ? taskPriorities.opportunity
-                : taskPriorities.horizon
-            )
-          "
-          icon="fa-solid fa-down-long"
-          :title="getDemoteTitle()"
-          class="pointer"
+          v-if="task.priority !== taskPriorities.critical"
+          icon="fa-solid fa-hourglass-start"
           :class="{ 'is-hidden': task.isCompleted }"
         />
-
-        <!-- <div>{{ task.id }}</div> -->
+        <font-awesome-icon
+          v-if="task.priority !== taskPriorities.critical"
+          icon="fa-solid fa-angles-up"
+          :class="{ 'is-hidden': task.isCompleted }"
+        />
       </div>
     </div>
-    <!-- </div> -->
-    <!-- <div v-else class="columns is-variable is-2 mb-4" > -->
-    <div v-else class="columns ml-0 mr-0 mb-4 is-variable is-2  has-background-light">
+
+    <!-- THIS TASK being edited -->
+    <div
+      v-else
+      class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
+    >
       <div class="column is-3 pl-2">
         <input
           v-model="formValues.title"
@@ -168,18 +232,18 @@
         />
       </div>
 
-      <div class="column actions has-background-white-bis">
+      <div class="column actions has-background-white-bis icon-pointer">
         <font-awesome-icon
           @click="handleSave()"
           icon="fa-solid fa-circle-check"
           title="Update task"
-          class="pointer has-text-primary"
+          class="has-text-primary"
         />
         <font-awesome-icon
           @click="toggleEdit()"
           icon="fa-solid fa-circle-xmark"
           title="Undo changes"
-          class="pointer has-text-danger"
+          class="has-text-danger"
         />
       </div>
     </div>
@@ -192,8 +256,6 @@ import { defineProps, onMounted, onUpdated, ref, computed } from "vue";
 const taskStore = useTaskStore();
 const props = defineProps(["id"]);
 const task = taskStore.getTask(props.id);
-const isEdit = ref(false);
-let checkboxDone;
 
 const inputTitle = ref(null);
 const inputStartDate = ref(null);
@@ -210,7 +272,7 @@ const formValues = ref({
 
 const classesTaskCompleted = computed(() => {
   const classes = {
-    "is-linethrough": task.isCompleted,
+    "is-linethrough": task.isCompleted && !task.isArchived,
     "has-text-grey-light": task.isCompleted,
     "has-background-white-bis": task.isCompleted,
   };
@@ -231,7 +293,7 @@ const getPostponeDate = () => {
 };
 
 const getPostponeTitle = () => {
-  let title = "Postpone to ";
+  let title = "Postpone until ";
   const formattedDate = taskStore
     .getFormattedDate(getPostponeDate())
     .toLowerCase();
@@ -242,16 +304,12 @@ const getPostponeTitle = () => {
 };
 
 const getPromoteTitle = () => {
+  const today = new Date().toISOString().split("T")[0];
   let title = "Advance to ";
   if (task.priority === taskPriorities.opportunity) title += "Critical";
   else title += "Opportunity";
-  return title;
-};
-
-const getDemoteTitle = () => {
-  let title = "Push down to ";
-  if (task.priority === taskPriorities.opportunity) title += "Horizon";
-  else title += "Opportunity";
+  if (task.startDate <= today || task.priority === taskPriorities.opportunity)
+    title += " today";
   return title;
 };
 
@@ -273,8 +331,17 @@ const handleSave = () => {
 
 const handleDelete = () => {
   console.log("handleDelete", task);
-  const accept = confirm(`Delete '${task.title.slice(0, 15)}' for sure?`);
+  const maxLength = 35;
+  const taskTitle =
+    task.title.length > maxLength
+      ? `${task.title.slice(0, maxLength)}…`
+      : task.title;
+  const accept = confirm(`Delete '${taskTitle}' for sure?`);
   if (accept) taskStore.removeTask(task);
+};
+
+const handleArchive = () => {
+  taskStore.modifyTask(task, { isArchived: !task.isArchived });
 };
 
 const handleRefresh = () => {
@@ -294,18 +361,42 @@ const handlePostpone = () => {
   });
 };
 
-const handlePriorityChange = (newPriority) => {
+const handlePriorityAdvance = () => {
+  const today = new Date().toISOString().split("T")[0];
   const fieldValues = {
-    priority: newPriority,
-    // startDate: new Date().toISOString().split("T")[0],
+    priority:
+      task.priority === taskPriorities.horizon
+        ? taskPriorities.opportunity
+        : taskPriorities.critical,
     refreshedAt: Date.now(),
   };
+  if (task.startDate <= today || task.priority === taskPriorities.opportunity)
+    fieldValues.startDate = today;
   taskStore.modifyTask(task, fieldValues);
 };
 
+// METHODS that allowed both promoting & demoting priorities
+
+// const getDemoteTitle = () => {
+//   let title = "Push down to ";
+//   if (task.priority === taskPriorities.opportunity) title += "Horizon";
+//   else title += "Opportunity";
+//   return title;
+// };
+
+// const handlePriorityChange = (newPriority) => {
+//   const fieldValues = {
+//     priority: newPriority,
+//     // startDate: new Date().toISOString().split("T")[0],
+//     refreshedAt: Date.now(),
+//   };
+//   taskStore.modifyTask(task, fieldValues);
+// };
+
 const toggleEdit = (inputRef) => {
-  isEdit.value = !isEdit.value;
-  if (isEdit.value) {
+  if (taskStore.taskBeingEdited) taskStore.taskBeingEdited = undefined;
+  else taskStore.taskBeingEdited = task;
+  if (taskStore.taskBeingEdited) {
     formValues.value.isCompleted = task.isCompleted;
     formValues.value.title = task.title;
     formValues.value.priority = task.priority;
@@ -313,15 +404,7 @@ const toggleEdit = (inputRef) => {
     formValues.value.dueDate = task.dueDate;
     focusInputRef = inputRef;
   } else focusInputRef = null;
-  // TODO - estilo dinámico
-  // 1. hide/disable checkbox
-  // 2. hide edit/trash/1mtd
-  // 3. show save/undo
 };
-
-onMounted(() => {
-  checkboxDone = document.getElementById("checkbox-done");
-});
 
 onUpdated(() => {
   if (!focusInputRef) return;
@@ -341,44 +424,6 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-/* section {
-  background-color: #efefef;
-} */
-
-/* .row-adjust {
-  height: 2.875rem;
-} */
-
-/* .task {
-  transition: background-color 300ms;
-} */
-
-/* .task-title {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-} */
-
-/* .task-title > :first-child {
-  max-width: 2rem;
-} */
-
-/* .task-title > :last-child {
-  flex: 1;
-} */
-
-/* .task-field {
-  cursor: pointer;
-} */
-
-/* .task:hover {
-  background-color: hsl(171, 100%, 96%);
-  transition: background-color 300ms;
-} */
-
-/* .column {
-  padding-block: 0.5rem;
-} */
 
 form,
 .actions {
@@ -392,27 +437,33 @@ form {
 }
 
 svg {
-  height: 1.125rem;
-  height: 18px;
+  height: 1.125rem; /* 18px */
 }
 
 /* svg:hover {
-  height: 1.25rem;
+  filter: brightness(1.5);
 } */
 
-/* .fa-circle-check {
-  color: hsl(171, 100%, 41%)
-} */
+.actions.icon-pointer > svg {
+  cursor: pointer;
+}
 
-.fa-pen-to-square:hover {
+.actions.icon-not-allowed > svg {
+  cursor: not-allowed;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+/* .fa-pen-to-square:hover {
   color: green;
-  /* transition: all 250ms; */
-
-  /* transition-property: font-size;
+  transition: all 250ms;
+  transition-property: font-size;
   transition-duration: 2s;
   transition-timing-function: linear;
-  transition-delay: 0; */
-}
+  transition-delay: 0;
+} */
 
 /* .columns {
   background-color: #efefef;
