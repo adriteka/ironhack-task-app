@@ -1,6 +1,11 @@
 <template>
   <section>
     <!-- NO TASK being edited -->
+    <!-- -modal -->
+    <ModalTaskDelete v-if="isModalOpen"
+      :taskTitle="modalTaskTitle"
+      @close="closeModal"
+    />
     <div
       v-if="!taskStore.taskBeingEdited"
       class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
@@ -197,6 +202,7 @@
           ref="inputTitle"
           placeholder="What you intend to do"
           class="input is-size-7"
+          :class="{ 'is-danger': formErrors.title }"
         />
       </div>
 
@@ -219,6 +225,11 @@
           ref="inputStartDate"
           id="start-date"
           class="input is-size-7"
+          :disabled="formValues.priority === taskPriorities.critical"
+          :class="{
+            'is-info': formValues.priority === taskPriorities.critical,
+            'is-danger': formErrors.startDate,
+          }"
         />
       </div>
 
@@ -229,6 +240,7 @@
           ref="inputDueDate"
           id="due-date"
           class="input is-size-7"
+          :class="{ 'is-danger': formErrors.dueDate }"
         />
       </div>
 
@@ -252,7 +264,13 @@
 
 <script setup>
 import { useTaskStore, taskPriorities } from "../stores";
-import { defineProps, onMounted, onUpdated, ref, computed } from "vue";
+import { defineProps, onUpdated, ref, computed } from "vue";
+
+// -modal
+import ModalTaskDelete from "./ModalTaskDelete.vue";
+const isModalOpen = ref(false);
+const modalTaskTitle = ref("");
+
 const taskStore = useTaskStore();
 const props = defineProps(["id"]);
 const task = taskStore.getTask(props.id);
@@ -263,11 +281,16 @@ const inputDueDate = ref(null);
 let focusInputRef = null;
 
 const formValues = ref({
-  isCompleted: task.isCompleted,
   title: task.title,
   priority: task.priority,
   startDate: task.startDate,
   dueDate: task.dueDate,
+});
+
+const formErrors = ref({
+  title: null,
+  startDate: null,
+  dueDate: null,
 });
 
 const classesTaskCompleted = computed(() => {
@@ -321,24 +344,75 @@ const handleCompleted = (newStatus) => {
   taskStore.modifyTask(task, fieldValues);
 };
 
+const isErrorTitle = () => {
+  formErrors.value.title = formValues.value.title.length < 10;
+  return formErrors.value.title;
+};
+
+const isErrorStartDate = () => {
+  formErrors.value.startDate =
+    !formValues.value.startDate || !formValues.value.startDate.length;
+  return formErrors.value.startDate;
+};
+
+const isErrorDueDate = () => {
+  formErrors.value.dueDate =
+    formValues.value.dueDate &&
+    formValues.value.dueDate < formValues.value.startDate;
+  return formErrors.value.dueDate;
+};
+
 const handleSave = () => {
-  if (!formValues.value.dueDate) formValues.value.dueDate = null;
+  if (isErrorTitle()) {
+    inputTitle.value.focus();
+    return;
+  }
+
+  if (formValues.value.dueDate != null && !formValues.value.dueDate.length)
+    formValues.value.dueDate = null;
+
+  if (isErrorStartDate()) {
+    inputStartDate.value.focus();
+    return;
+  }
+  if (isErrorDueDate()) {
+    inputDueDate.value.focus();
+    return;
+  }
+
   if (task.priority !== formValues.priority)
     formValues.refreshedAt = Date.now();
   taskStore.modifyTask(task, formValues.value);
   toggleEdit();
 };
 
-const handleDelete = () => {
-  console.log("handleDelete", task);
-  const maxLength = 35;
-  const taskTitle =
-    task.title.length > maxLength
-      ? `${task.title.slice(0, maxLength)}…`
-      : task.title;
-  const accept = confirm(`Delete '${taskTitle}' for sure?`);
-  if (accept) taskStore.removeTask(task);
+// -modal
+const closeModal = async (result) => {
+  console.log("closeModal", result);
+  isModalOpen.value = false;
+  modalTaskTitle.value = "";
+  if (result) await taskStore.removeTask(task);
 };
+
+// -modal
+const handleDelete = () => {
+  modalTaskTitle.value = task.title;
+  isModalOpen.value = true;
+};
+
+// const handleDelete = async () => {
+//   console.log("handleDelete", task);
+
+//   isModalOpen = true;
+
+//   const maxLength = 35;
+//   const taskTitle =
+//     task.title.length > maxLength
+//       ? `${task.title.slice(0, maxLength)}…`
+//       : task.title;
+//   const accept = confirm(`Delete '${taskTitle}' for sure?`);
+//   if (accept) await taskStore.removeTask(task);
+// };
 
 const handleArchive = () => {
   taskStore.modifyTask(task, { isArchived: !task.isArchived });
@@ -424,7 +498,6 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-
 form,
 .actions {
   display: flex;

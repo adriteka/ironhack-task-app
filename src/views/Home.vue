@@ -1,6 +1,7 @@
 <template>
   <div v-if="authStore.isAuth" class="container">
-    <NewTask />
+    <!-- <ModalTaskDelete /> -->
+    <TaskNew />
     <section class="box">
       <NavBarTasks />
       <router-view />
@@ -11,8 +12,9 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores";
-import NewTask from "../components/NewTask.vue";
+import TaskNew from "../components/TaskNew.vue";
 import NavBarTasks from "../components/NavBarTasks.vue";
+// import ModalTaskDelete from "../components/ModalTaskDelete.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

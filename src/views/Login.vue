@@ -44,6 +44,7 @@
     <div class="field is-center">
       <button type="submit" class="button mt-4">Log in</button>
     </div>
+    <p class="help is-danger is-center">{{ form.submit.error }}</p>
   </form>
   <div class="alternative has-text-grey">
     <p>
@@ -68,6 +69,9 @@ const form = ref({
   },
   password: {
     value: "",
+    error: null,
+  },
+  submit: {
     error: null,
   },
 });
@@ -95,6 +99,7 @@ const checkPassword = () => {
 };
 
 const handleSubmit = async () => {
+  form.value.submit.error = null;
   if (!checkEmail()) {
     inputEmail.value.focus();
     return;
@@ -106,7 +111,11 @@ const handleSubmit = async () => {
 
   // throw-try-catch, e.g.
   // invalid credentials
-  await authStore.logIn(form.value.email.value, form.value.password.value);
+  try {
+    await authStore.logIn(form.value.email.value, form.value.password.value);
+  } catch (e) {
+    form.value.submit.error = e;
+  }
   if (authStore.isAuth) router.push({ name: "home" });
 };
 
@@ -134,7 +143,7 @@ a {
 .alternative {
   padding-top: 0.75rem;
   border-top: 1px solid gray;
-  margin-top: 2rem;
+  margin-top: 1rem;
   text-align: center;
 }
 

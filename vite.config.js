@@ -7,7 +7,7 @@ export default defineConfig({
   // base: process.env.NODE_ENV === "development" ? "/" : "/ironhack-task-app/"
   base: process.env.NODE_ENV === "production" ? "/ironhack-task-app/" : "/",
   server: {
-    base: process.env.NODE_ENV === "production" ? "/nombre-repositorio/" : "/",
+    base: process.env.NODE_ENV === "production" ? "/ironhack-task-app/" : "/",
   },
   // build: { outDir: "docs" },
   build: {

@@ -11,6 +11,7 @@ export const useTaskStore = defineStore("tasks", {
   state: () => ({
     tasks: [],
     taskBeingEdited: undefined,
+    // taskBeingDeleted: undefined,
   }),
   actions: {
     getTask(id) {

@@ -11,13 +11,14 @@
           >
           <input
             v-model="formValues.title"
+            ref="inputTitle"
             type="text"
             id="title"
-            ref="inputTitle"
             placeholder="What you intend to do"
             class="input is-size-6-5"
+            :class="{ 'is-danger': formErrors.title }"
           />
-          <p class="help is-success">This username is available</p>
+          <p class="help is-danger">{{ formErrors.title }}</p>
         </div>
 
         <div class="field column is-2">
@@ -25,7 +26,11 @@
             >Urgency</label
           >
           <div class="select">
-            <select v-model="formValues.priority" id="priority">
+            <select
+              v-model="formValues.priority"
+              @change="setStartDate()"
+              id="priority"
+            >
               <option :value="taskPriorities.critical">Critical</option>
               <option :value="taskPriorities.opportunity" default>
                 Opportunity
@@ -42,12 +47,24 @@
 
           <input
             v-model="formValues.startDate"
+            ref="inputStartDate"
             type="date"
             id="start-date"
             class="input is-size-6-5"
+            :disabled="formValues.priority === taskPriorities.critical"
           />
 
-          <p class="help is-success">This username is available</p>
+          <p
+            class="help"
+            :class="{
+              'is-info': formValues.priority === taskPriorities.critical,
+              'is-danger':
+                formValues.priority !== taskPriorities.critical &&
+                formErrors.startDate,
+            }"
+          >
+            {{ formErrors.startDate }}
+          </p>
         </div>
 
         <div class="field column is-2">
@@ -56,13 +73,15 @@
           >
           <input
             v-model="formValues.dueDate"
+            ref="inputDueDate"
             type="date"
             id="due-date"
             class="input is-size-6-5"
+            :class="{ 'is-danger': formErrors.dueDate }"
           />
-          <p class="help is-success">This username is available</p>
+          <p class="help is-danger">{{ formErrors.dueDate }}</p>
         </div>
-        <div class="field column">
+        <div class="field column buttons">
           <label
             class="label is-size-7-5 is-uppercase is-invisible"
             for="create-button"
@@ -75,6 +94,14 @@
           >
             Create
           </button>
+          <button
+            type="button"
+            @click="resetForm()"
+            class="button is-size-6-5"
+            id="reset-button"
+          >
+            Reset
+          </button>
         </div>
       </fieldset>
     </form>
@@ -82,7 +109,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthStore, useTaskStore, taskPriorities } from "../stores";
 
 const authStore = useAuthStore();
@@ -97,14 +124,73 @@ const formValues = ref({
   dueDate: null,
 });
 
+const formErrors = ref({
+  titleError: null,
+  startDate: null,
+  dueDate: null,
+});
+
 const inputTitle = ref(null);
+const inputStartDate = ref(null);
+const inputDueDate = ref(null);
+
+const setStartDate = () => {
+  if (formValues.value.priority === taskPriorities.critical) {
+    formValues.value.startDate = new Date().toISOString().split("T")[0];
+    formErrors.value.startDate = "Critical starts today";
+  } else formErrors.value.startDate = null;
+};
+
+const checkTitle = () => {
+  if (formValues.value.title.length < 10) {
+    formErrors.value.title = "At least 10 characters";
+    return false;
+  }
+  formErrors.value.title = null;
+  return true;
+};
+
+const checkStartDate = () => {
+  if (!formValues.value.startDate || !formValues.value.startDate.length) {
+    formErrors.value.startDate = "Start date should be specified";
+    return false;
+  }
+  formErrors.value.startDate = null;
+  return true;
+};
+
+const checkDueDate = () => {
+  if (formValues.value.dueDate != null && !formValues.value.dueDate.length)
+    formValues.value.dueDate = null;
+  else if (
+    formValues.value.dueDate &&
+    formValues.value.dueDate < formValues.value.startDate
+  ) {
+    formErrors.value.dueDate = "Can't be prior to start date";
+    return false;
+  }
+  formErrors.value.dueDate = null;
+  return true;
+};
 
 const handleSubmit = () => {
   // TODO - validate form
-  console.log("handleSubmit formValues.value", formValues.value);
+  if (!checkTitle()) {
+    inputTitle.value.focus();
+    return;
+  }
+  if (!checkStartDate()) {
+    inputStartDate.value.focus();
+    return;
+  }
+  if (!checkDueDate()) {
+    inputDueDate.value.focus();
+    return;
+  }
+
+  // throw-try-catch
   taskStore.createTask(formValues.value);
   resetForm();
-  inputTitle.value.focus();
 };
 
 const resetForm = () => {
@@ -112,7 +198,7 @@ const resetForm = () => {
   formValues.value.priority = taskPriorities.opportunity;
   formValues.value.startDate = new Date().toISOString().split("T")[0];
   formValues.value.dueDate = null;
-
+  inputTitle.value.focus();
   // TODO - error reset
 
   // form.value.title.error = false;
@@ -126,4 +212,8 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.help {
+  height: 18px;
+}
+</style>

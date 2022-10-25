@@ -7,8 +7,11 @@
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
-const route = useRoute();
+import { useAuthStore } from "../stores";
+import { useRouter } from "vue-router";
+const authStore = useAuthStore();
+const router = useRouter();
+if (authStore.isAuth) router.push({ name: "home" });
 </script>
 
 <style scoped>
