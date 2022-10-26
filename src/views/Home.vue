@@ -1,10 +1,11 @@
 <template>
   <div v-if="authStore.isAuth" class="container">
-    <!-- <ModalTaskDelete /> -->
     <TaskNew />
     <section class="box">
       <NavBarTasks />
+      <Transition name="slide-up" appear>
       <router-view />
+      </Transition>
     </section>
   </div>
 </template>
@@ -22,4 +23,19 @@ const authStore = useAuthStore();
 if (!authStore.isAuth) router.push({ name: "login", params: { signup: 0 } });
 </script>
 
-<style scoped></style>
+<style scoped>
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-1.25rem);
+}
+</style>

@@ -22,6 +22,7 @@
 
 .is-linethrough {
   text-decoration: 2px line-through rgba(0, 209, 178, 0.25);
+  transition: text-decoration 500ms;
 }
 
 html {

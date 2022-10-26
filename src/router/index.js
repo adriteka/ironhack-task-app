@@ -10,17 +10,17 @@ const routes = [
       {
         path: "current",
         name: "current",
-        component: () => import("../views/CurrentTasks.vue"),
+        component: () => import("../views/TasksCurrent.vue"),
       },
       {
         path: "future",
         name: "future",
-        component: () => import("../views/FutureTasks.vue"),
+        component: () => import("../views/TasksFuture.vue"),
       },
       {
         path: "archived",
         name: "archived",
-        component: () => import("../views/ArchivedTasks.vue"),
+        component: () => import("../views/TasksArchived.vue"),
       },
     ],
   },

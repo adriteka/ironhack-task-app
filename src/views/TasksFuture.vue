@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <TaskList :tasks="tasksOpportunityFuture">Future Opportunity</TaskList>
-    <TaskList :tasks="tasksHorizonFuture">Future Horizon</TaskList>
-  </div>
+
+    <div>
+      <TaskList :tasks="tasksOpportunityFuture">Future Opportunity</TaskList>
+      <TaskList :tasks="tasksHorizonFuture">Future Horizon</TaskList>
+    </div>
+
 </template>
 
 <script setup>
@@ -62,9 +64,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* div {
-  overflow: hidden;
-  overflow-y: auto;
-  max-height: 90vh;
-} */
+
 </style>

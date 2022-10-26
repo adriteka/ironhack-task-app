@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <TaskList :tasks="tasksArchived">Archived Completed Tasks</TaskList>
-  </div>
+  <TaskList :tasks="tasksArchived">Archived Completed Tasks</TaskList>
 </template>
 
 <script setup>
@@ -40,10 +38,4 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
-/* div {
-  overflow: hidden;
-  overflow-y: auto;
-  max-height: 90vh;
-} */
-</style>
+<style scoped></style>

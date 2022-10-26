@@ -2,23 +2,27 @@
   <section>
     <!-- NO TASK being edited -->
     <!-- -modal -->
-    <ModalTaskDelete v-if="isModalOpen"
-      :taskTitle="modalTaskTitle"
-      @close="closeModal"
-    />
+    <Transition name="fade">
+      <ModalTaskDelete
+        v-if="isModalOpen"
+        :taskTitle="modalTaskTitle"
+        @close="closeModal"
+      />
+    </Transition>
+
     <div
       v-if="!taskStore.taskBeingEdited"
       class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
       :class="classesTaskCompleted"
     >
-      <p class="column is-5 pt-4 pb-4">
-        <span
-          @dblclick="toggleEdit('inputTitle')"
-          :class="{ 'cursor-pointer': !task.isCompleted }"
-          :title="!task.isCompleted ? 'Double-click to edit' : ''"
-          >{{ task.title }}</span
-        >
-      </p>
+        <p class="column is-5 pt-4 pb-4">
+          <span
+            @dblclick="toggleEdit('inputTitle')"
+            :class="{ 'cursor-pointer': !task.isCompleted }"
+            :title="!task.isCompleted ? 'Double-click to edit' : ''"
+            >{{ task.title }}</span
+          >
+        </p>
 
       <p class="column is-2 pt-4 pb-4">
         <span
@@ -208,7 +212,11 @@
 
       <div class="column is-2">
         <div class="select is-size-7">
-          <select v-model="formValues.priority" id="priority">
+          <select
+            v-model="formValues.priority"
+            @change="setStartDate()"
+            id="priority"
+          >
             <option :value="taskPriorities.critical">Critical</option>
             <option :value="taskPriorities.opportunity" default>
               Opportunity
@@ -344,6 +352,11 @@ const handleCompleted = (newStatus) => {
   taskStore.modifyTask(task, fieldValues);
 };
 
+const setStartDate = () => {
+  if (formValues.value.priority === taskPriorities.critical)
+    formValues.value.startDate = new Date().toISOString().split("T")[0];
+};
+
 const isErrorTitle = () => {
   formErrors.value.title = formValues.value.title.length < 10;
   return formErrors.value.title;
@@ -388,7 +401,6 @@ const handleSave = () => {
 
 // -modal
 const closeModal = async (result) => {
-  console.log("closeModal", result);
   isModalOpen.value = false;
   modalTaskTitle.value = "";
   if (result) await taskStore.removeTask(task);
@@ -529,16 +541,13 @@ svg {
   transform: rotate(90deg);
 }
 
-/* .fa-pen-to-square:hover {
-  color: green;
-  transition: all 250ms;
-  transition-property: font-size;
-  transition-duration: 2s;
-  transition-timing-function: linear;
-  transition-delay: 0;
-} */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
 
-/* .columns {
-  background-color: #efefef;
-} */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

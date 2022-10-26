@@ -15,14 +15,22 @@
         <p class="column is-2 pt-2">Due date</p>
         <p class="column pt-2">Actions</p>
       </div>
-      <Task v-for="t in props.tasks" :id="t.id" :key="t.id" />
+      <TransitionGroup name="list" appear>
+        <Task v-for="t in props.tasks" :id="t.id" :key="t.id" />
+      </TransitionGroup>
     </div>
-    <div v-else class="empty"><p class="has-text-grey-light is-size-6">Nothing to work with on this front</p></div>
+    <div v-else class="empty">
+      <Transition name="list" appear>
+        <p class="has-text-grey-light is-size-6">
+          Nothing to work with on this front
+        </p>
+      </Transition>
+    </div>
   </section>
 </template>
 
 <script setup>
-import { defineProps, computed } from "vue";
+import { defineProps, computed, TransitionGroup } from "vue";
 import Task from "../components/Task.vue";
 const props = defineProps(["tasks"]);
 
@@ -61,5 +69,26 @@ header p {
 
 .empty > p {
   text-align: center;
+}
+
+.list-move, /* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.list-leave-active {
+  position: absolute;
 }
 </style>
