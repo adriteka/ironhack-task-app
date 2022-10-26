@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("auth", {
     isAuth: false,
     userId: undefined,
     email: undefined,
+    darkMode: false,
     // TODO
     // name: undefined,
     // reviewDay: "sun",
@@ -22,7 +23,7 @@ export const useAuthStore = defineStore("auth", {
       this.email = email;
       this.isAuth = true;
     },
-    async fueralogOut() {
+    async logOut() {
       await logOut();
       console.log("logged out");
       this.userId = undefined;
@@ -30,13 +31,21 @@ export const useAuthStore = defineStore("auth", {
       this.name = undefined;
       this.isAuth = false;
     },
+    checkDarkMode() {
+      if (this.darkMode) document.querySelector("html").className = "dark";
+    },
+    toggleDarkMode() {
+      this.darkMode = !this.darkMode;
+      document.documentElement.className = this.darkMode ? "dark" : "";
+    },
   },
   persist: {
-		enabled: true,
-		strategies: [{
-				key: "auth",
-				storage: localStorage,
-			},
-		],
-	},
+    enabled: true,
+    strategies: [
+      {
+        key: "auth",
+        storage: localStorage,
+      },
+    ],
+  },
 });

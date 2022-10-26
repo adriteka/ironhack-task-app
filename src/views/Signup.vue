@@ -4,6 +4,7 @@
     <div class="field">
       <label for="email" class="label is-size-7-5 is-uppercase">E-mail</label>
       <p class="control has-icons-left">
+        <!-- Interacción confusa si se comprueba onFocusOut -->
         <!-- v-on:focusout="checkEmail()" -->
         <input
           v-model="form.email.value"
@@ -65,6 +66,7 @@
     <div class="field is-center">
       <button type="submit" class="button mt-4">Sign up</button>
     </div>
+    <p class="help is-ok is-center">{{ form.submit.error }}</p>
   </form>
   <div class="alternative has-text-grey">
     <p>
@@ -95,6 +97,9 @@ const form = ref({
     value: "",
     error: null,
   },
+  submit: {
+    error: null,
+  }
 });
 
 const inputEmail = ref(null);
@@ -147,8 +152,10 @@ const handleSubmit = async () => {
   // email already exists -not thrown for security reasons (exposing signed up e-mails)
   // 402 pw < 6 chars
   await authStore.signUp(form.value.email.value, form.value.password.value);
-  // MODAL - check your e-mail??
-  router.push({ name: "login" });
+  form.value.submit.error = `Please confirm the registration e-mail to log in`;
+  form.value.password.value = "";
+  form.value.passwordRepeat.value = "";
+  // router.push({ name: "login" });
 };
 
 onMounted(() => {
@@ -175,7 +182,7 @@ a {
 .alternative {
   padding-top: 0.75rem;
   border-top: 1px solid gray;
-  margin-top: 2rem;
+  margin-top: 1rem;
   text-align: center;
 }
 

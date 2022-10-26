@@ -25,6 +25,24 @@ const routes = [
     ],
   },
   {
+    path: "/about",
+    name: "about",
+    redirect: { name: "tasks" },
+    component: () => import("../views/About.vue"),
+    children: [
+      {
+        path: "tasks",
+        name: "tasks",
+        component: () => import("../views/AboutTasks.vue"),
+      },
+      {
+        path: "webdev",
+        name: "webdev",
+        component: () => import("../views/AboutWebDev.vue"),
+      },
+    ],
+  },
+  {
     path: "/auth",
     name: "auth",
     redirect: { name: "login" },
@@ -53,6 +71,9 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return savedPosition || { top: 0, behavior: "smooth" };
+  },
 });
 
 export default router;

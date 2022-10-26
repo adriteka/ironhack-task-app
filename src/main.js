@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPersist from 'pinia-plugin-persist';
+import "./dark.css";
 import "./style.css";
 import App from "./App.vue";
 import router from "./router";
@@ -10,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faEnvelope,
   faLock,
+  faCircleHalfStroke,
   faRightFromBracket,
   faPenToSquare,
   faTrashCan,
@@ -29,6 +31,7 @@ import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 
 library.add(faEnvelope);
 library.add(faLock);
+library.add(faCircleHalfStroke);
 library.add(faRightFromBracket);
 library.add(faPenToSquare);
 library.add(faTrashCan);

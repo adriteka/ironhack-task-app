@@ -15,14 +15,14 @@
       class="columns ml-0 mr-0 mb-4 is-variable is-2 has-background-light"
       :class="classesTaskCompleted"
     >
-        <p class="column is-5 pt-4 pb-4">
-          <span
-            @dblclick="toggleEdit('inputTitle')"
-            :class="{ 'cursor-pointer': !task.isCompleted }"
-            :title="!task.isCompleted ? 'Double-click to edit' : ''"
-            >{{ task.title }}</span
-          >
-        </p>
+      <p class="column is-5 pt-4 pb-4">
+        <span
+          @dblclick="toggleEdit('inputTitle')"
+          :class="{ 'cursor-pointer': !task.isCompleted }"
+          :title="!task.isCompleted ? 'Double-click to edit' : ''"
+          >{{ task.title }}</span
+        >
+      </p>
 
       <p class="column is-2 pt-4 pb-4">
         <span
@@ -273,8 +273,6 @@
 <script setup>
 import { useTaskStore, taskPriorities } from "../stores";
 import { defineProps, onUpdated, ref, computed } from "vue";
-
-// -modal
 import ModalTaskDelete from "./ModalTaskDelete.vue";
 const isModalOpen = ref(false);
 const modalTaskTitle = ref("");
@@ -399,32 +397,16 @@ const handleSave = () => {
   toggleEdit();
 };
 
-// -modal
-const closeModal = async (result) => {
-  isModalOpen.value = false;
-  modalTaskTitle.value = "";
-  if (result) await taskStore.removeTask(task);
-};
-
-// -modal
 const handleDelete = () => {
   modalTaskTitle.value = task.title;
   isModalOpen.value = true;
 };
 
-// const handleDelete = async () => {
-//   console.log("handleDelete", task);
-
-//   isModalOpen = true;
-
-//   const maxLength = 35;
-//   const taskTitle =
-//     task.title.length > maxLength
-//       ? `${task.title.slice(0, maxLength)}…`
-//       : task.title;
-//   const accept = confirm(`Delete '${taskTitle}' for sure?`);
-//   if (accept) await taskStore.removeTask(task);
-// };
+const closeModal = async (result) => {
+  isModalOpen.value = false;
+  modalTaskTitle.value = "";
+  if (result) await taskStore.removeTask(task);
+};
 
 const handleArchive = () => {
   taskStore.modifyTask(task, { isArchived: !task.isArchived });

@@ -5,6 +5,7 @@
       <div class="field">
         <label for="email" class="label is-size-7-5 is-uppercase">E-mail</label>
         <p class="control has-icons-left">
+          <!-- Interacción confusa si se comprueba onFocusOut -->
           <!-- v-on:focusout="checkEmail()" -->
           <input
             v-model="form.email.value"

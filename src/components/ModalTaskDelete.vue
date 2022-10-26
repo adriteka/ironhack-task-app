@@ -1,73 +1,54 @@
 <template>
-    <div class="modal is-active">
-      <div class="modal-background"></div>
-      <div class="modal-content">
-        <div class="card">
-          <div class="card-content">
-            <div class="media">
-              <div class="media-left">
-                <figure class="image">
-                  <font-awesome-icon
-                    icon="fa-solid fa-trash-can"
-                    class="has-text-danger fa-icon-middle"
-                  />
-                </figure>
-              </div>
-              <div class="media-content">
-                <p class="title is-5">Delete Task</p>
-                <p class="content has-text-grey">
-                  You are about to delete "<span
-                    class="has-text-black-bis"
-                    >{{ taskTitle }}</span
-                  >".
-                </p>
-                <p class="content has-text-grey">
-                  Are you sure? This action cannot be undone.
-                </p>
-                <div class="modal-card-foot has-background-white">
-                  <button
-                    :v-show="props.code == 3"
-                    class="button is-danger"
-                    @click="handleClick(true)"
-                  >
-                    Confirm
-                  </button>
-                  <button class="button" @click="handleClick(false)">Cancel</button>
-                </div>
+  <div class="modal is-active">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image">
+                <font-awesome-icon
+                  icon="fa-solid fa-trash-can"
+                  class="has-text-danger fa-icon-middle"
+                />
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-5">Delete Task</p>
+              <p class="content has-text-grey">
+                You are about to delete "<span class="has-text-black-bis">{{
+                  taskTitle
+                }}</span
+                >".
+              </p>
+              <p class="content has-text-grey">
+                Are you sure? This action cannot be undone.
+              </p>
+              <div class="modal-card-foot has-background-white">
+                <button class="button is-danger" @click="emits('close', true)">
+                  Confirm
+                </button>
+                <button class="button" @click="emits('close', false)">
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, onMounted } from "vue";
+import { ref, defineProps, defineEmits } from "vue";
 const props = defineProps({
-  // isOpen: {
-  //   type: Boolean,
-  //   required: true,
-  // },
   taskTitle: {
     type: String,
     required: true,
   },
 });
-// const showMe = ref(false);
 const emits = defineEmits(["close"]);
-
-const handleClick = (confirm) => {
-  emits("close", confirm);
-};
-
-
-// onMounted(() => {
-//   console.log("modal onMounted");
-//   showMe.value = true;
-// });
-
-console.log("Modal - script setup");
 </script>
 
 <style scoped>
@@ -80,5 +61,4 @@ console.log("Modal - script setup");
 .fa-icon-middle {
   height: 40px;
 }
-
 </style>
