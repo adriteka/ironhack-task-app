@@ -3,16 +3,14 @@
     <p class="is-size-7 has-text-grey">
       <img src="../assets/1mtd-logo-small.png" alt="1MTD List Manager logo" />
       <b>1MTD List Manager</b>
-      is the result of a single-person 10-day project for a front-end web
-      development bootcamp.
-      <router-link :to="{ name: 'about' }">Learn more about it.</router-link>
+      is the result of a 10-day project for a front-end web development bootcamp
+      on October 2022.
+      <router-link :to="{ name: 'about' }">Learn more about it</router-link>
     </p>
   </footer>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style scoped>
 footer {

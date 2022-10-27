@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import piniaPersist from 'pinia-plugin-persist';
+import piniaPersist from "pinia-plugin-persist";
 import "./dark.css";
 import "./style.css";
 import App from "./App.vue";
@@ -29,6 +29,18 @@ import {
 
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 
+import {
+  faHtml5,
+  faCss3,
+  faSquareJs,
+  faVuejs,
+  faGit,
+  faGithub,
+  faYarn,
+  faChrome,
+  faFontAwesome,
+} from "@fortawesome/free-brands-svg-icons";
+
 library.add(faEnvelope);
 library.add(faLock);
 library.add(faCircleHalfStroke);
@@ -44,6 +56,15 @@ library.add(faSquare);
 library.add(faSquareCheck);
 library.add(faArrowRightToBracket);
 library.add(faArrowUpFromBracket);
+library.add(faHtml5);
+library.add(faCss3);
+library.add(faSquareJs);
+library.add(faVuejs);
+library.add(faGit);
+library.add(faGithub);
+library.add(faYarn);
+library.add(faChrome);
+library.add(faFontAwesome);
 
 const pinia = createPinia();
 pinia.use(piniaPersist);

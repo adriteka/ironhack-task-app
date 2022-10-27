@@ -36,7 +36,10 @@
       <p class="column is-2 pt-4 pb-4">
         <span
           @dblclick="toggleEdit('inputDueDate')"
-          :class="{ 'cursor-pointer': !task.isCompleted }"
+          :class="{
+            'cursor-pointer': !task.isCompleted,
+            'has-text-danger': taskStore.isDateDueByTomorrow(task.dueDate),
+          }"
           :title="!task.isCompleted ? 'Double-click to edit' : ''"
           >{{ taskStore.getFormattedDate(task.dueDate) }}</span
         >
@@ -312,7 +315,7 @@ const getPostponeDate = () => {
   const date = new Date(task.startDate);
   let day;
 
-  // If Horizon: postpone until sunday after startDate
+  // If Horizon: postpone until Sunday after startDate
   // Else: postpone until day after startDate
   if (task.priority === taskPriorities.horizon)
     day = date.getDate() - date.getDay() + 7;
@@ -356,6 +359,12 @@ const setStartDate = () => {
 };
 
 const isErrorTitle = () => {
+  let title = formValues.value.title.trim();
+  // elimina 2 blanks consecutivos
+  while (title.indexOf(doubleBlank) >= 0) {
+    title = title.replaceAll("  ", " ");
+  }
+  formValues.value.title = title;
   formErrors.value.title = formValues.value.title.length < 10;
   return formErrors.value.title;
 };
@@ -443,7 +452,7 @@ const handlePriorityAdvance = () => {
   taskStore.modifyTask(task, fieldValues);
 };
 
-// METHODS that allowed both promoting & demoting priorities
+// METHODS that allowd both promoting & demoting priority
 
 // const getDemoteTitle = () => {
 //   let title = "Push down to ";
@@ -497,6 +506,11 @@ form,
   display: flex;
   gap: 0.875rem;
   align-items: center;
+}
+
+.overdue {
+  background-color: yellow;
+  color: red;
 }
 
 form {

@@ -142,6 +142,13 @@ const setStartDate = () => {
 };
 
 const checkTitle = () => {
+  let title = formValues.value.title.trim();
+  // elimina 2 blanks consecutivos
+  while (title.indexOf(doubleBlank) >= 0) {
+    title = title.replaceAll("  ", " ");
+  }
+  formValues.value.title = title;
+
   if (formValues.value.title.length < 10) {
     formErrors.value.title = "At least 10 characters";
     return false;

@@ -29,6 +29,25 @@ export const useTaskStore = defineStore("tasks", {
       }
     },
 
+    isDateDueByTomorrow(d) {
+      if (!d) return false;
+      // get due date in milliseconds
+      const date = new Date(d);
+      date.setHours(0, 0, 0, 0);
+      const time = date.getTime();
+
+      // today in milliseconds
+      const today = new Date();
+      const timeToday = today.setHours(0, 0, 0, 0);
+
+      // ms in 1 day
+      const msPerDay = 86400000;
+
+      // compare times
+      if ((time - timeToday) / msPerDay <= 1) return true;
+      else return false;
+    },
+
     getFormattedDate(d) {
       if (!d) return "";
       const date = new Date(d);
