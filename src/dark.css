@@ -75,12 +75,12 @@
 }
 
 .dark .button.is-primary {
-  background-color: #00d1b2!;
-  border-color: transparent!;
+  background-color: #00d1b2 !important;
+  border-color: transparent !important;
 }
 
 .dark .button:hover {
-  border-color: transparent!;
+  border-color: transparent !important;
 }
 
 .dark .button.is-primary {
@@ -142,7 +142,7 @@
 }
 
 .dark nav .has-text-grey-light {
-  color: hsl(0, 0%, 29%)!important;
+  color: hsl(0, 0%, 29%) !important;
 }
 
 .dark .content.has-text-grey {
