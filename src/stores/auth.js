@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { signUp, logIn, logOut } from "../api";
+import { useTaskStore } from "../stores";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -29,6 +30,11 @@ export const useAuthStore = defineStore("auth", {
       this.email = undefined;
       this.name = undefined;
       this.isAuth = false;
+      // TEST - Purpose:
+      // Avoid getting tasks from different logins /sessions in production
+      const taskStore = useTaskStore();
+      taskStore.tasks = [];
+      taskStore.taskBeingEdited = undefined;
     },
     checkDarkMode() {
       if (this.darkMode) document.querySelector("html").className = "dark";
