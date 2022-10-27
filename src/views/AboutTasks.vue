@@ -1,7 +1,7 @@
 <template>
   <section>
     <article>
-      <h3 class="title is-5 tasklist-title">Principles</h3>
+      <h3 class="title is-5">Principles</h3>
       <div>
         <p>
           <b>1MTD List Manager</b> freely adapts the
@@ -15,16 +15,15 @@
           <li>
             Put tasks in the <b>Critical</b> list if they are
             <em>absolutely due today</em>. First, make sure they're stated as an
-            action (start with a verb), then ask yourself
+            action (i.e. start with a verb), then ask yourself
             <em>
               "Would I be willing to work late to get this item completed?" </em
             >. If the answer is no, put them in the Opportunity list instead.
           </li>
           <li>
-            Place in the <b>Opportunity</b> list either ideas that you want to
-            think about 1-2 more days before deciding on their urgency. New
-            thoughts that pop into your mind should go into this list by
-            default.
+            Place in the <b>Opportunity</b> list both ideas that you want to
+            think about 1-2 more days before deciding on their urgency and tasks
+            you'd tackle whenever you found a gap in your schedule.
           </li>
           <li>
             Send to the <b>Horizon</b> list any item that doesn't meet the
@@ -44,7 +43,7 @@
           </li>
           <li>
             Limit the Opportunity list to <b>up to 20 items</b> in order to be
-            able to scan through and digest them all in one glance.
+            able to scan through them all in one glance.
           </li>
           <li>
             Don't worry about the Horizon list that much: it can get as big as
@@ -55,22 +54,25 @@
         <p>Each list gets reviewed at its own frequency:</p>
         <ul>
           <li>Review Critical items once <b>each hour</b>.</li>
-          <li>Review Opportunity items <b>once every day</b>.</li>
-          <li>Review Horizon items <b>once a week</b></li>
+          <li>
+            Review Opportunity items <b>once a day</b> after you're done with
+            your Critical tasks.
+          </li>
+          <li>Review Horizon items <b>once a week</b>.</li>
         </ul>
-        <h4 class="title is-5 pt-5 mb-4">List Priorization</h4>
+        <h4 class="title is-5 pt-5 mb-4">List Prioritization</h4>
         <p>
           Each list works under the "fresh principle": it gives prominence to
-          items closest to the date you intend to deal with them, which is where
-          Start Date comes to play.
+          the items you intend to deal closest to today. This is where Start Dates
+          come to play:
         </p>
         <ul>
           <li>
             <b>Start Dates</b> determine where and when tasks will be displayed
-            on their list: tasks starting today will always appear at the top,
-            older tasks will be displayed further down the list (they are "over
-            their prime time" for better or for worse), and future tasks will be
-            hidden until their time comes.
+            on their list: tasks starting today will always appear at their top,
+            older tasks will be displayed further down the list (for better or
+            for worse, they are "over their prime time"), and future tasks will
+            be hidden until their time comes.
           </li>
           <li>
             <b>Due Dates</b> should only be used for tasks that actually have a
@@ -84,20 +86,20 @@
       <h3 class="title is-5 tasklist-title">Usual Workflow</h3>
       <div>
         <p>
-          As previously mentioned, <b>Start Dates</b> will greatly determine
-          what tasks appear at the top of each list. You can always manually
-          change such dates; however, the app also offers useful
-          <b>Refresh</b> and <b>Postpone</b> actions that'll change dates for
-          you in order to quickly move tasks up and down (or even hide from)
-          their list.
+          As previously mentioned, <b>Start Dates</b> greatly determine
+          what appears at the top of each list. You can change dates
+          manually (except for Critical tasks); however, the app also offers
+          useful <b>Refresh</b> and <b>Postpone</b> actions that'll change dates
+          for you in order to quickly move tasks up and down (or even hide from)
+          their list so you can focus on the top contenders.
         </p>
         <ul>
           <li>
             <b>Start the day </b> taking care of Critical items right off the
-            bat. Check tasks off the list as you complete them and keep coming
+            bat. Check tasks off as you complete them and keep coming
             back for more. If you have spare time (e.g. between tasks,
             appointments being cancelled last minute, etc.), look over your
-            Opportunity list for other possible things to do.
+            Opportunity list for possible alternatives to stay productive.
           </li>
           <li>
             <b>Whenever a new thought pops into your head</b>, free that mental
@@ -109,17 +111,17 @@
             <b>At the end of the day</b>, review the Opportunity list: delete
             meaningless new entries (some thoughts gathered during the day won't
             make the cut), promote to Critical those you intend to work on the
-            next day, refresh entries that you want to keep on top of this list,
+            next day, refresh entries that you want to keep on top of the list,
             and postpone or move to Horizon the ones you want to deal with at a
             later stage.
           </li>
           <li>
             <b>At the end of the week</b>, review the Horizon list: similar to
-            what you did with the Opportunity list, consider whether to promote,
-            refresh, postpone, or delete items at your discretion.
+            what you do each day with the Opportunity list, consider whether to
+            promote, refresh, postpone, or delete items at your discretion.
           </li>
         </ul>
-        <p class="pt-5">
+        <p class="pt-5 cta">
           Now it's up to you to
           <router-link :to="{ name: 'home' }"
             >put things into practice</router-link
@@ -136,6 +138,7 @@ section {
 }
 
 h3 {
+  text-align: center;
   padding-bottom: 0.75rem;
   border-bottom: 2px solid black;
   margin-top: 2.5rem;
@@ -152,6 +155,10 @@ article > div {
 
 p {
   padding-bottom: 0.25rem;
+}
+
+p.cta {
+  text-align: center;
 }
 
 ul {

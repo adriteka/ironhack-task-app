@@ -38,7 +38,8 @@
           @dblclick="toggleEdit('inputDueDate')"
           :class="{
             'cursor-pointer': !task.isCompleted,
-            'has-text-danger': taskStore.isDateDueByTomorrow(task.dueDate),
+            'has-text-danger':
+              !task.isCompleted && taskStore.isDateDueByTomorrow(task.dueDate),
           }"
           :title="!task.isCompleted ? 'Double-click to edit' : ''"
           >{{ taskStore.getFormattedDate(task.dueDate) }}</span
@@ -289,6 +290,9 @@ const inputStartDate = ref(null);
 const inputDueDate = ref(null);
 let focusInputRef = null;
 
+const singleBlank = " ";
+const doubleBlank = "  ";
+
 const formValues = ref({
   title: task.title,
   priority: task.priority,
@@ -360,9 +364,10 @@ const setStartDate = () => {
 
 const isErrorTitle = () => {
   let title = formValues.value.title.trim();
+
   // elimina 2 blanks consecutivos
   while (title.indexOf(doubleBlank) >= 0) {
-    title = title.replaceAll("  ", " ");
+    title = title.replaceAll(doubleBlank, singleBlank);
   }
   formValues.value.title = title;
   formErrors.value.title = formValues.value.title.length < 10;

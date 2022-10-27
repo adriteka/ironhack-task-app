@@ -115,6 +115,9 @@ import { useAuthStore, useTaskStore, taskPriorities } from "../stores";
 const authStore = useAuthStore();
 const taskStore = useTaskStore();
 
+const singleBlank = " ";
+const doubleBlank = "  ";
+
 const formValues = ref({
   userId: authStore.userId,
   title: "",
@@ -145,7 +148,7 @@ const checkTitle = () => {
   let title = formValues.value.title.trim();
   // elimina 2 blanks consecutivos
   while (title.indexOf(doubleBlank) >= 0) {
-    title = title.replaceAll("  ", " ");
+    title = title.replaceAll(doubleBlank, singleBlank);
   }
   formValues.value.title = title;
 

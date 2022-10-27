@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="title is-5 tasklist-title">Web Development</h3>
+    <h3 class="title is-5">Web Development</h3>
 
     <p>
       For other aspiring web developers out there, the following list includes
@@ -34,8 +34,9 @@
               </div>
             </div>
             <div class="content is-size-6-5">
-              HTML5 as a mark-up language, CSS3 for styling and presentation,
-              and JS for dynamic behavior
+              As anyone may have guessed, the project is based on HTML5 as its
+              mark-up language, CSS3 for styles and layouts, and JS for dynamic
+              behavior
             </div>
           </div>
         </div>
@@ -79,8 +80,8 @@
             </div>
             <div class="content is-size-6-5">
               Distributed version control system used in combination with Git
-              Bash terminal and GitHub online service to work on local
-              repository and link to a remote one
+              Bash terminal and GitHub online service to work on a local
+              repository linked to a remote one
             </div>
           </div>
         </div>
@@ -104,7 +105,7 @@
               Used for
               <a
                 href="https://github.com/adriteka/ironhack-task-app"
-                taget="_blank"
+                target="_blank"
                 >source code hosting</a
               >, version control, and project deployment on GitHub pages
             </div>
@@ -192,7 +193,7 @@
             </div>
             <div class="content is-size-6-5">
               CSS framework that provides ready-to-use responsive layout
-              definitions and reusable front-end components.
+              definitions and reusable front-end components with a unified style
             </div>
           </div>
         </div>
@@ -234,8 +235,8 @@
             </div>
             <div class="content is-size-6-5">
               Google's browser for web development testing (inspecting CSS
-              styling, as well as Vue.js component status, API request
-              responses, etc.)
+              styles, content of JS variables, status of Vue.js components,
+              results from API requests)
             </div>
           </div>
         </div>
@@ -256,8 +257,8 @@
               </div>
             </div>
             <div class="content is-size-6-5">
-              Icons set in SVG format used throughout the UI (most brand icons
-              displayed here as well)
+              Icons set in SVG format used throughout the UI (and most brand icons
+              displayed on this page too)
             </div>
           </div>
         </div>
@@ -275,6 +276,7 @@ section {
 }
 
 h3 {
+  text-align: center;
   padding-bottom: 0.75rem;
   border-bottom: 2px solid black;
   margin-top: 2.5rem;
