@@ -257,8 +257,8 @@
               </div>
             </div>
             <div class="content is-size-6-5">
-              Icons set in SVG format used throughout the UI (and most brand icons
-              displayed on this page too)
+              Icons set in SVG format used throughout the UI (and most brand
+              icons displayed on this page too)
             </div>
           </div>
         </div>
@@ -273,6 +273,11 @@
 section {
   font-size: 1.125rem;
   padding-bottom: 3rem;
+}
+
+section > p {
+  text-align: center;
+  margin-inline: auto;
 }
 
 h3 {

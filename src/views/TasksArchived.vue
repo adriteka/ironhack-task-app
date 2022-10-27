@@ -24,7 +24,6 @@ const taskSort = (a, b) => {
 };
 
 const tasksArchived = computed(() => {
-  console.log("computed archived");
   return taskStore.tasks
     .filter((t) => t.isArchived)
     .sort((a, b) => {

@@ -25,7 +25,6 @@ export const useAuthStore = defineStore("auth", {
     },
     async logOut() {
       await logOut();
-      console.log("logged out");
       this.userId = undefined;
       this.email = undefined;
       this.name = undefined;

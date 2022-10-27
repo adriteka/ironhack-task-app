@@ -88,7 +88,6 @@ export const useTaskStore = defineStore("tasks", {
       await updateTask(t.id, fieldValues);
       for (let key in fieldValues) {
         t[key] = fieldValues[key];
-        console.log(`modifyTask ${key} ${t[key]}`);
       }
     },
 

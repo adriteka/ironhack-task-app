@@ -51,6 +51,8 @@ html {
   filter: brightness(0.8);
 }
 
+input
+
 .container {
   padding-inline: 1rem;
   margin-inline: auto;
@@ -94,6 +96,6 @@ fieldset[disabled] .select:not(.is-multiple):not(.is-loading)::after {
   border-color: !important;
 } */
 
-.cursor-pointer {
+.cursor-pointer  {
   cursor: pointer;
 }

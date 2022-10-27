@@ -67,12 +67,20 @@
   color: #b5b5b5;
   background-color: #282828;
   border-color: #b5b5b5;
-  /* var(--clr-white); */
 }
 
 .dark .button:hover {
   color: #ededed;
   border-color: #ededed;
+}
+
+.dark .button.is-primary {
+  background-color: #00d1b2!;
+  border-color: transparent!;
+}
+
+.dark .button:hover {
+  border-color: transparent!;
 }
 
 .dark .button.is-primary {

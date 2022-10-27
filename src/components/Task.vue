@@ -431,7 +431,6 @@ const handleRefresh = () => {
     startDate: new Date().toISOString().split("T")[0],
     refreshedAt: Date.now(),
   };
-  console.log("handleRefresh", fieldValues.refreshedAt);
   taskStore.modifyTask(task, fieldValues);
   formValues.value.startDate = fieldValues.startDate;
 };

@@ -62,13 +62,11 @@ export const logOut = async () => {
 // TASKS
 
 export const selectAllTasks = async () => {
-  const { data, error } = await supabase
-    .from("tasks")
-    .select("*");
-    // .order("priority", { ascending: false })
-    // .order("is_archived")
-    // .order("start_date", { ascending: false })
-    // .order("refreshed_at", { ascending: false });
+  const { data, error } = await supabase.from("tasks").select("*");
+  // .order("priority", { ascending: false })
+  // .order("is_archived")
+  // .order("start_date", { ascending: false })
+  // .order("refreshed_at", { ascending: false });
 
   if (error) console.log(error.message, error.status);
   else return data.map((elem) => snakeToCamel(elem));
@@ -90,7 +88,7 @@ export const updateTask = async (id, fieldValues) => {
     .from("tasks")
     .update(camelToSnake(fieldValues))
     .eq("id", id);
-    if (error) console.log(error.message, error.status);
+  if (error) console.log(error.message, error.status);
 };
 
 export const deleteTask = async (id) => {

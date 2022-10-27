@@ -54,7 +54,6 @@ watch(
   () => route.name,
   (newValue) => {
     routeName.value = newValue;
-    console.log("watch routeName", routeName.value);
   }
 );
 </script>

@@ -30,7 +30,6 @@ const taskSortAsc = (a, b) => {
 };
 
 const tasksOpportunityFuture = computed(() => {
-  console.log("computed opportunity future");
   return taskStore.tasks
     .filter(
       (t) =>
@@ -44,7 +43,6 @@ const tasksOpportunityFuture = computed(() => {
 });
 
 const tasksHorizonFuture = computed(() => {
-  console.log("computed horizon future");
   return taskStore.tasks
     .filter(
       (t) =>

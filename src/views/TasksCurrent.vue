@@ -31,7 +31,6 @@ const taskSortAsc = (a, b) => {
 };
 
 const tasksCritical = computed(() => {
-  console.log("computed critical");
   return taskStore.tasks
     .filter((t) => t.priority === taskPriorities.critical && !t.isArchived)
     .sort((a, b) => {
@@ -40,7 +39,6 @@ const tasksCritical = computed(() => {
 });
 
 const tasksOpportunity = computed(() => {
-  console.log("computed opportunity");
   return taskStore.tasks
     .filter(
       (t) =>
@@ -54,7 +52,6 @@ const tasksOpportunity = computed(() => {
 });
 
 const tasksHorizon = computed(() => {
-  console.log("computed horizon");
   return taskStore.tasks
     .filter(
       (t) =>
@@ -68,7 +65,6 @@ const tasksHorizon = computed(() => {
 });
 
 const tasksOpportunityPostponed = computed(() => {
-  console.log("computed opportunity postponed");
   return taskStore.tasks
     .filter(
       (t) =>
@@ -81,7 +77,6 @@ const tasksOpportunityPostponed = computed(() => {
 });
 
 const tasksHorizonPostponed = computed(() => {
-  console.log("computed horizon postponed");
   return taskStore.tasks
     .filter(
       (t) =>

@@ -208,13 +208,12 @@ const resetForm = () => {
   formValues.value.priority = taskPriorities.opportunity;
   formValues.value.startDate = new Date().toISOString().split("T")[0];
   formValues.value.dueDate = null;
-  inputTitle.value.focus();
-  // TODO - error reset
 
-  // form.value.title.error = false;
-  // form.value.priority.error = false;
-  // form.value.startDate.error = false;
-  // form.value.dueDate.error = false;
+  formErrors.value.title = null;
+  formErrors.value.startDate = null;
+  formErrors.value.dueDate = null;
+
+  inputTitle.value.focus();
 };
 
 onMounted(() => {
