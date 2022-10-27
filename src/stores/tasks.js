@@ -73,7 +73,7 @@ export const useTaskStore = defineStore("tasks", {
     },
 
     async getAllTasks() {
-      this.tasks = await selectAllTasks();
+      if (!this.tasks.length) this.tasks = await selectAllTasks();
       return this.tasks;
     },
 

@@ -31,7 +31,7 @@ export const useAuthStore = defineStore("auth", {
       this.name = undefined;
       this.isAuth = false;
       // TEST - Purpose:
-      // Avoid getting tasks from different logins /sessions in production
+      // Avoid getting tasks from different login sessions in production
       const taskStore = useTaskStore();
       taskStore.tasks = [];
       taskStore.taskBeingEdited = undefined;

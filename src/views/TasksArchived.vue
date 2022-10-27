@@ -8,16 +8,6 @@ import { useTaskStore } from "../stores";
 import TaskList from "../components/TaskList.vue";
 const taskStore = useTaskStore();
 
-// const taskSortDesc = (a, b) => {
-//   if (a.startDate < b.startDate) return -1;
-//   else if (a.startDate > b.startDate) return 1;
-//   else if (a.refreshedAt < b.refreshedAt) return -1;
-//   else if (a.refreshedAt > b.refreshedAt) return 1;
-//   else return 0;
-// };
-
-// CHANGE SORT ORDER so completion_date, and refreshed_At first
-
 const taskSort = (a, b) => {
   if (a.completedAt < b.completedAt) return 1;
   else return -1;
@@ -32,7 +22,6 @@ const tasksArchived = computed(() => {
 });
 
 onMounted(async () => {
-  // if (!taskStore.tasks)
   await taskStore.getAllTasks();
 });
 </script>

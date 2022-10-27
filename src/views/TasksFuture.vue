@@ -56,7 +56,6 @@ const tasksHorizonFuture = computed(() => {
 });
 
 onMounted(async () => {
-  // if (!taskStore.tasks)
   await taskStore.getAllTasks();
 });
 </script>
